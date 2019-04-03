@@ -39,12 +39,11 @@ _rev_override=n
 ### IMPORTANT: Do no edit below this line unless you know what you're doing
 
 _major=5.0
-_minor=5
+_minor=6
 _srcname=linux-${_major}
-_clr=${_major}.4-722
 pkgbase=linux-shadow
 pkgver=${_major}.${_minor}
-pkgrel=2
+pkgrel=1
 arch=('x86_64')
 url='https://github.com/clearlinux-pkgs/linux'
 license=('GPL2')
@@ -89,7 +88,7 @@ prepare() {
 
     ### Setting config
         msg2 'Setting config...'
-        cp -Tf ../../ponto\ config/config-custom-sdw ./.config
+        cp -Tf ../../ponto\ config/config-custom-2 ./.config
 
     ### Copying i915 firmware and intel-ucode
         msg2 "Copying i915 firmware and intel-ucode-${_ucode}..."
@@ -293,7 +292,7 @@ done
 
 sha256sums=('437b141a6499159f5a7282d5eb4b2be055f8e862ccce44d7464e8759c31a2e43'
             'SKIP'
-            '70051be96455f84e13af8a3e487a6da2ed3274843bbd26049004d4e7578365ea'
+            '188fbac8a0c853d560252f0b37ab98c6707ad8d0840394bef7e269229fefd6d3'
             '2a4438a66ed1a9b82be943d6d19366c006787ba5af302f425674ca6d8c928099'
             '226e30068ea0fecdb22f337391385701996bfbdba37cdcf0f1dbf55f1080542d'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
