@@ -88,7 +88,7 @@ prepare() {
 
     ### Setting config
         msg2 'Setting config...'
-        cp -Tf ../../ponto\ config/config-custom-2 ./.config
+        cp -Tf ../../ponto\ config/config-custom-sdw ./.config
 
     ### Copying i915 firmware and intel-ucode
         msg2 "Copying i915 firmware and intel-ucode-${_ucode}..."
