@@ -1,0 +1,1 @@
+quiet splash rd.udev.log_priority=3 scsi_mod.use_blk_mq=1 elevator=bfq zswap.enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=20 zswap.zpool=z3fold console=tty0 console=ttyS0,115200n8 initcall_debug tsc=reliable no_timer_check noreplace-smp kvm-intel.nested=1 rootfstype=ext4 intel_iommu=igfx_off cryptomgr.notests rcupdate.rcu_expedited=1 rcu_nocbs=0-64 rw
