@@ -18,26 +18,6 @@ _enable_gcc_more_v=y
 
 _subarch=
 
-# Compile ONLY probed modules
-# Build in only the modules that you currently have probed in your system VASTLY
-# reducing the number of modules built and the build time.
-#
-# WARNING - ALL modules must be probed BEFORE you begin making the pkg!
-#
-# To keep track of which modules are needed for your specific system/hardware,
-# give module_db script a try: https://aur.archlinux.org/packages/modprobed-db
-# This PKGBUILD will call it directly to probe all the modules you have logged!
-#
-# More at this wiki page ---> https://wiki.archlinux.org/index.php/Modprobed-db
-_localmodcfg=
-
-# If you have laptop with optimus and it hangs on boot one solution might be 
-# to set acpi_rev_override. Yet for this to happen kernel should be compiled
-# with `CONFIG_ACPI_REV_OVERRIDE_POSSIBLE`. Set next variable to `y` to enable.
-_rev_override=n
-
-### IMPORTANT: Do no edit below this line unless you know what you're doing
-
 _major=5.0
 _minor=6
 _srcname=linux-${_major}
@@ -88,7 +68,7 @@ prepare() {
 
     ### Setting config
         msg2 'Setting config...'
-        cp -Tf ../../ponto\ config/config-custom-sdw ./.config
+        cp -Tf ../../ponto\ config/config-custom-2 ./.config
 
     ### Copying i915 firmware and intel-ucode
         msg2 "Copying i915 firmware and intel-ucode-${_ucode}..."
@@ -114,19 +94,6 @@ prepare() {
     ### Prepared version
         make -s kernelrelease > ../version
         msg2 "Prepared %s version %s" "$pkgbase" "$(<../version)"
-
-    ### Optionally load needed modules for the make localmodconfig
-        # See https://aur.archlinux.org/packages/modprobed-db
-        if [ -n "$_localmodcfg" ]; then
-        msg2 'If you have modprobed-db installed, running it in recall mode now'
-            if [ -e /usr/bin/modprobed-db ]; then
-            [[ -x /usr/bin/sudo ]] || {
-            echo 'Cannot call modprobe with sudo. Install sudo and configure it to work with this user.'
-            exit 1; }
-            sudo /usr/bin/modprobed-db recall
-            make localmodconfig
-            fi
-        fi
 
     ### Running make nconfig
 
