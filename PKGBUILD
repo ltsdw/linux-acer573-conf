@@ -3,23 +3,10 @@
 
 # Tweak kernel options prior to a build via nconfig
 _makenconfig=y
-
 _enable_gcc_more_v=y
-# Optionally select a sub architecture by number if building in a clean chroot
-# Leaving this entry blank will require user interaction during the build
-# which will cause a failure to build if using makechrootpkg. Note that the
-# generic (default) option is 26.
-#
-# Note - the march=native option is unavailable by this method, use the nconfig
-# and manually select it.
-
-#  21. Intel Broadwell (MBROADWELL)
-#  26. Generic-x86-64 (GENERIC_CPU)
-
-_subarch=
 
 _major=5.0
-_minor=7
+_minor=8
 _srcname=linux-${_major}
 pkgbase=linux-shadow
 pkgver=${_major}.${_minor}
@@ -79,29 +66,23 @@ prepare() {
 
     ### Patch source to unlock additional gcc CPU optimizations
         # https://github.com/graysky2/kernel_gcc_patch
-        if [ "${_enable_gcc_more_v}" = "y" ]; then
         msg2 'Enabling additional gcc CPU optimizations...'
         patch -Np1 -i "$srcdir/kernel_gcc_patch-$_gcc_more_v/enable_additional_cpu_optimizations_for_gcc_v8.1+_kernel_v4.13+.patch"
-        fi
 
-    ### Get kernel version
-        if [ "${_enable_gcc_more_v}" = "y" ] || [ -n "${_subarch}" ]; then
-        yes "$_subarch" | make oldconfig
-        else
+    ### do not run `make olddefconfig` as it sets default options
+        yes "" | make oldconfig
         make prepare
-        fi
-
+        yes "" | make config >/dev/null 
+    
     ### Prepared version
         make -s kernelrelease > ../version
         msg2 "Prepared %s version %s" "$pkgbase" "$(<../version)"
 
     ### Running make nconfig
-
         [[ -z "$_makenconfig" ]] || make nconfig
 
-    ### Save configuration for later reuse
-
-        cp -Tf ./.config "${startdir}/config-${pkgver}-${pkgrel}${_kernelname}"
+    ### save configuration for later reuse
+        cat ./.config > ../../ponto\ config/config-custom-d
 }
 
 build() {
@@ -259,7 +240,7 @@ done
 
 sha256sums=('437b141a6499159f5a7282d5eb4b2be055f8e862ccce44d7464e8759c31a2e43'
             'SKIP'
-            '1352a9a46776c2ed4ea9bfaafa5c4ae5f78a7de7748db2f00157540e395357e4'
+            '735404f3c76533574155ea1325ed76d158f3ee9ca5a745c6d0dcf4ec4b280ca3'            
             '2a4438a66ed1a9b82be943d6d19366c006787ba5af302f425674ca6d8c928099'
             '226e30068ea0fecdb22f337391385701996bfbdba37cdcf0f1dbf55f1080542d'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
