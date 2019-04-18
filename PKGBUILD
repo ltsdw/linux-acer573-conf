@@ -3,7 +3,6 @@
 
 # Tweak kernel options prior to a build via nconfig
 _makenconfig=y
-_enable_gcc_more_v=y
 
 _major=5.0
 _minor=8
@@ -73,7 +72,7 @@ prepare() {
         yes "" | make oldconfig
         make prepare
         yes "" | make config >/dev/null 
-    
+
     ### Prepared version
         make -s kernelrelease > ../version
         msg2 "Prepared %s version %s" "$pkgbase" "$(<../version)"
