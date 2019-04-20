@@ -5,7 +5,7 @@
 _makenconfig=y
 
 _major=5.0
-_minor=8
+_minor=9
 _srcname=linux-${_major}
 pkgbase=linux-shadow
 pkgver=${_major}.${_minor}
@@ -72,7 +72,7 @@ prepare() {
         yes "" | make oldconfig
         make prepare
         yes "" | make config >/dev/null 
-
+ 
     ### Prepared version
         make -s kernelrelease > ../version
         msg2 "Prepared %s version %s" "$pkgbase" "$(<../version)"
@@ -239,7 +239,7 @@ done
 
 sha256sums=('437b141a6499159f5a7282d5eb4b2be055f8e862ccce44d7464e8759c31a2e43'
             'SKIP'
-            '735404f3c76533574155ea1325ed76d158f3ee9ca5a745c6d0dcf4ec4b280ca3'            
+            'db27fa7ad0da7d2079be82675daf3ffeb0907c683fe8d7bed73bf8e88e9f47f8'
             '2a4438a66ed1a9b82be943d6d19366c006787ba5af302f425674ca6d8c928099'
             '226e30068ea0fecdb22f337391385701996bfbdba37cdcf0f1dbf55f1080542d'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
