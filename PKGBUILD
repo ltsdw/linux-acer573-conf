@@ -71,8 +71,8 @@ prepare() {
     ### do not run `make olddefconfig` as it sets default options
         yes "" | make oldconfig
         make prepare
-        yes "" | make config >/dev/null 
- 
+        yes "" | make config >/dev/null
+
     ### Prepared version
         make -s kernelrelease > ../version
         msg2 "Prepared %s version %s" "$pkgbase" "$(<../version)"
