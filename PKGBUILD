@@ -9,7 +9,7 @@ _minor=2
 _srcname=linux-${_major}
 pkgbase=linux-shadow
 pkgver=${_major}.${_minor}
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url='https://github.com/clearlinux-pkgs/linux'
 license=('GPL2')
@@ -50,9 +50,9 @@ prepare() {
 
     ### Add Clearlinux patches
         cp -R ../../clearlinuxBACK ${srcdir}/clearlinuxpatch
-        for i in $(grep '^Patch' ${srcdir}/clearlinux/linux.spec | grep -Ev '^Patch0125' | sed -n 's/.*: //p'); do
-        msg2 "Applying patch ${i}..."
-        patch -Np1 -i "$srcdir/clearlinuxpatch/${i}"
+	 for i in ${srcdir}/clearlinuxpatch/*.patch; do
+	 msg2 "Applying patch ${i}..."
+	 patch -Np1 -i "${i}"
         done
 
     ### Setting config
@@ -63,7 +63,7 @@ prepare() {
         msg2 "Copying i915 firmware and intel-ucode-${_ucode}..."
         cp -a /usr/lib/firmware/i915 firmware/
         cp -a ${srcdir}/Intel-Linux-Processor-Microcode-Data-Files-microcode-${_ucode}/intel-ucode firmware/
-        cp  ${srcdir}/Intel-Linux-Processor-Microcode-Data-Files-microcode-${_ucode}/intel-ucode-with-caveats/06* firmware/intel-ucode/
+        cp ${srcdir}/Intel-Linux-Processor-Microcode-Data-Files-microcode-${_ucode}/intel-ucode-with-caveats/06* firmware/intel-ucode/
         rm -f firmware/intel-ucode/0f*
 
     ### Patch source to unlock additional gcc CPU optimizations
