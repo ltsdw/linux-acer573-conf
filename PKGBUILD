@@ -4,8 +4,8 @@
 # Tweak kernel options prior to a build via nconfig
 _makenconfig=y
 
-_major=5.1
-_minor=9
+_major=5.2
+_minor=2
 _srcname=linux-${_major}
 pkgbase=linux-shadow
 pkgver=${_major}.${_minor}
@@ -15,8 +15,8 @@ url='https://github.com/clearlinux-pkgs/linux'
 license=('GPL2')
 makedepends=('bc' 'git' 'inetutils' 'kmod' 'libelf' 'linux-firmware' 'xmlto')
 options=('!strip')
-_ucode='20190312'
-_gcc_more_v='20180509'
+_ucode='20190618'
+_gcc_more_v='20190714'
 source=(
   "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.xz"
   "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.sign"
@@ -36,37 +36,41 @@ prepare() {
     cd ${_srcname}
 
     ### Add upstream patches
-        msg2 'Add upstream patches'
+        msg2 "Add upstream patches"
         patch -Np1 -i ../patch-${pkgver}
 
+	msg2 'Add BMQ patch'
+	patch -Np1 -i "../../bmq-5.2/v5.2_bmq098.patch"
+
     ### Setting version
-        msg2 'Setting version...'
+        msg2 "Setting version..."
         scripts/setlocalversion --save-scmversion
         echo "-$pkgrel" > localversion.10-pkgrel
         echo "$_kernelname" > localversion.20-pkgname
 
     ### Add Clearlinux patches
         cp -R ../../clearlinuxBACK ${srcdir}/clearlinuxpatch
-        for i in $(grep "^Patch" ${srcdir}/clearlinuxpatch/linux.spec | grep -Ev "^Patch0126" | sed -n "s/.*: //p"); do
+        for i in $(grep '^Patch' ${srcdir}/clearlinux/linux.spec | grep -Ev '^Patch0125' | sed -n 's/.*: //p'); do
         msg2 "Applying patch ${i}..."
         patch -Np1 -i "$srcdir/clearlinuxpatch/${i}"
         done
 
     ### Setting config
-        msg2 'Setting config...'
+        msg2 "Setting config..."
         cp -Tf ../../ponto\ config/config-custom-sdw ./.config
 
     ### Copying i915 firmware and intel-ucode
         msg2 "Copying i915 firmware and intel-ucode-${_ucode}..."
         cp -a /usr/lib/firmware/i915 firmware/
         cp -a ${srcdir}/Intel-Linux-Processor-Microcode-Data-Files-microcode-${_ucode}/intel-ucode firmware/
-        cp ${srcdir}/Intel-Linux-Processor-Microcode-Data-Files-microcode-${_ucode}/intel-ucode-with-caveats/06* firmware/intel-ucode
+        cp  ${srcdir}/Intel-Linux-Processor-Microcode-Data-Files-microcode-${_ucode}/intel-ucode-with-caveats/06* firmware/intel-ucode/
         rm -f firmware/intel-ucode/0f*
 
     ### Patch source to unlock additional gcc CPU optimizations
         # https://github.com/graysky2/kernel_gcc_patch
-        msg2 'Enabling additional gcc CPU optimizations...'
-        patch -Np1 -i "$srcdir/kernel_gcc_patch-$_gcc_more_v/enable_additional_cpu_optimizations_for_gcc_v8.1+_kernel_v4.13+.patch"
+        msg2 "Applying enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v4.13+.patch ..."
+        patch -Np1 -i "$srcdir/kernel_gcc_patch-$_gcc_more_v/enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v4.13+.patch"
+
 
     ### do not run `make olddefconfig` as it sets default options
         yes "" | make oldconfig
@@ -80,7 +84,8 @@ prepare() {
     ### Running make nconfig
         [[ -z "$_makenconfig" ]] || make nconfig
 
-    ### save configuration for later reuse
+    ### Save configuration for later reuse
+
         cat ./.config > ../../ponto\ config/config-custom-d
 }
 
@@ -91,10 +96,10 @@ build() {
 }
 
 _package() {
-    pkgdesc='kernel and modules'
+    pkgdesc="kernel and modules"
     depends=('coreutils' 'linux-firmware' 'kmod' 'mkinitcpio>=0.7')
     optdepends=('crda: to set the correct wireless channels of your country' 'modprobed-db: Keeps track of EVERY kernel module that has ever been probed - useful for those of us who make localmodconfig')
-    backup=('etc/mkinitcpio.d/${pkgbase}.preset')
+    backup=("etc/mkinitcpio.d/${pkgbase}.preset")
     install=linux.install
 
     local kernver="$(<version)"
@@ -102,13 +107,13 @@ _package() {
 
     cd ${_srcname}
 
-    msg2 'Installing boot image...'
+    msg2 "Installing boot image..."
     # systemd expects to find the kernel here to allow hibernation
     # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
     install -Dm644 "$(make -s image_name)" "$modulesdir/vmlinuz"
     install -Dm644 "$modulesdir/vmlinuz" "$pkgdir/boot/vmlinuz-$pkgbase"
 
-    msg2 'Installing modules...'
+    msg2 "Installing modules..."
     make INSTALL_MOD_PATH="$pkgdir/usr" modules_install
 
     # a place for external modules,
@@ -121,7 +126,7 @@ _package() {
     # remove build and source links
     rm "$modulesdir"/{source,build}
 
-    msg2 'Installing hooks...'
+    msg2 "Installing hooks..."
     
     # sed expression for following substitutions
     local subst="
@@ -144,18 +149,18 @@ _package() {
     sed "$subst" ../99-linux.hook | install -Dm644 /dev/stdin \
         "$pkgdir/usr/share/libalpm/hooks/99-${pkgbase}.hook"
 
-    msg2 'Fixing permissions...'
+    msg2 "Fixing permissions..."
     chmod -Rc u=rwX,go=rX "$pkgdir"
 }
 
 _package-headers() {
-    pkgdesc='header files and scripts for building modules for linux-shadow'
+    pkgdesc="Header files and scripts for building modules for linux-shadow"
 
     local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
 
     cd ${_srcname}
 
-    msg2 'Installing build files...'
+    msg2 "Installing build files..."
     install -Dt "$builddir" -m644 Makefile .config Module.symvers System.map vmlinux
     install -Dt "$builddir/kernel" -m644 kernel/Makefile
     install -Dt "$builddir/arch/x86" -m644 arch/x86/Makefile
@@ -170,7 +175,7 @@ _package-headers() {
     # ???
     mkdir "$builddir/.tmp_versions"
 
-    msg2 'Installing headers...'
+    msg2 "Installing headers..."
     cp -t "$builddir" -a include
     cp -t "$builddir/arch/x86" -a arch/x86/include
     install -Dt "$builddir/arch/x86/kernel" -m644 arch/x86/kernel/asm-offsets.s
@@ -186,10 +191,10 @@ _package-headers() {
     install -Dt "$builddir/drivers/media/dvb-frontends" -m644 drivers/media/dvb-frontends/*.h
     install -Dt "$builddir/drivers/media/tuners" -m644 drivers/media/tuners/*.h
 
-    msg2 'Installing KConfig files...'
-    find . -name "Kconfig*" -exec install -Dm644 {} "$builddir/{}" \;
+    msg2 "Installing KConfig files..."
+    find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
 
-    msg2 'Removing unneeded architectures...'
+    msg2 "Removing unneeded architectures..."
     local arch
     for arch in "$builddir"/arch/*/; do
         [[ $arch = */x86/ ]] && continue
@@ -197,18 +202,18 @@ _package-headers() {
         rm -r "$arch"
     done
 
-    msg2 'Removing documentation...'
+    msg2 "Removing documentation..."
     rm -r "$builddir/Documentation"
 
-    msg2 'Removing broken symlinks...'
-    find -L "$builddir" -type l -printf "Removing %P\n" -delete
+    msg2 "Removing broken symlinks..."
+    find -L "$builddir" -type l -printf 'Removing %P\n' -delete
 
-    msg2 'Removing loose objects...'
-    find "$builddir" -type f -name "*.o" -printf "Removing %P\n" -delete
+    msg2 "Removing loose objects..."
+    find "$builddir" -type f -name '*.o' -printf 'Removing %P\n' -delete
 
-    msg2 'Stripping build tools...'
+    msg2 "Stripping build tools..."
     local file
-    while read -rd "" file; do
+    while read -rd '' file; do
         case "$(file -bi "$file")" in
             application/x-sharedlib\;*)      # Libraries (.so)
                 strip -v $STRIP_SHARED "$file" ;;
@@ -221,11 +226,11 @@ _package-headers() {
         esac
     done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
 
-    msg2 'Adding symlink...'
+    msg2 "Adding symlink..."
     mkdir -p "$pkgdir/usr/src"
     ln -sr "$builddir" "$pkgdir/usr/src/$pkgbase-$pkgver"
 
-    msg2 'Fixing permissions...'
+    msg2 "Fixing permissions..."
     chmod -Rc u=rwX,go=rX "$pkgdir"
 }
 
@@ -237,11 +242,11 @@ for _p in "${pkgname[@]}"; do
   }"
 done
 
-sha256sums=('d06a7be6e73f97d1350677ad3bae0ce7daecb79c2c2902aaabe806f7fa94f041'
+sha256sums=('54ad66f672e1a831b574f5e704e8a05f1e6180a8245d4bdd811208a6cb0ac1e7'
             'SKIP'
-            '34aee04c1af73dbf2f57f953df8032c581a1210952c231c2f1d80d0165ab0e71'
-            '2a4438a66ed1a9b82be943d6d19366c006787ba5af302f425674ca6d8c928099'
-            '226e30068ea0fecdb22f337391385701996bfbdba37cdcf0f1dbf55f1080542d'
+            '729084da258dd41195aae7f6c897b92f2e9355c0f9d28beec1fb8e67984afdf0'
+            '74ec7415988d40fa53686d994cf8cb27accdbd35c5373c4c3afc2e93372ebba5'
+            '2466fb4aecc66d1b258b4cbdb2f215b5099f266d8c4386bb62ad1a0acd0caf5b'
             'ae2e95db94ef7176207c690224169594d49445e04249d2499e9d2fbc117a0b21'
             'c043f3033bb781e2688794a59f6d1f7ed49ef9b13eb77ff9a425df33a244a636'
             'ed9d35cb7d7bd829ff6253353efa5e2d119820fe4f4310aea536671f5e4caa37'
