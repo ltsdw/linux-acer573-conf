@@ -1,5 +1,5 @@
 /*
-   1024x768.S: EDID data set for standard 1024x768 60 Hz monitor
+   1366x768.S: EDID data set for standard 1366x768 60 Hz monitor
 
    Copyright (C) 2011 Carsten Emde <C.Emde@osadl.org>
 
