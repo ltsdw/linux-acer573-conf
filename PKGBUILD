@@ -49,7 +49,7 @@ prepare() {
         echo "$_kernelname" > localversion.20-pkgname
 
     ### Add Clearlinux patches
-        cp -R ../../clearlinuxBACK ${srcdir}/clearlinuxpatch
+        cp -R ../../patches_cl ${srcdir}/clearlinuxpatch
 	 for i in ${srcdir}/clearlinuxpatch/*.patch; do
 	 msg2 "Applying patch ${i}..."
 	 patch -Np1 -i "${i}"
@@ -57,7 +57,7 @@ prepare() {
 
     ### Setting config
         msg2 "Setting config..."
-        cp -Tf ../../ponto\ config/config-custom-sdw ./.config
+        cp -Tf ../../config/config-custom-sdw ./.config
 
     ### Copying i915 firmware and intel-ucode
         msg2 "Copying i915 firmware and intel-ucode-${_ucode}..."
@@ -86,7 +86,7 @@ prepare() {
 
     ### Save configuration for later reuse
 
-        cat ./.config > ../../ponto\ config/config-custom-d
+        cat ./.config > ../../config/config-custom-d
 }
 
 build() {
