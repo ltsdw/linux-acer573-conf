@@ -9,7 +9,7 @@ _minor=2
 _srcname=linux-${_major}
 pkgbase=linux-shadow
 pkgver=${_major}.${_minor}
-pkgrel=3
+pkgrel=4
 arch=('x86_64')
 url='https://github.com/clearlinux-pkgs/linux'
 license=('GPL2')
@@ -40,7 +40,7 @@ prepare() {
         patch -Np1 -i ../patch-${pkgver}
 
 	msg2 'Add BMQ patch'
-	patch -Np1 -i "../../bmq-5.2/v5.2_bmq098.patch"
+	patch -Np1 -i "../../cpu_scheduler/0001-MultiQueue-Skiplist-Scheduler-version-0.193.patch"
 
     ### Setting version
         msg2 "Setting version..."
