@@ -39,7 +39,7 @@ prepare() {
         msg2 "Add upstream patches"
         patch -Np1 -i ../patch-${pkgver}
 
-	msg2 'Add BMQ patch'
+	msg2 'Add MuQSS patch'
 	patch -Np1 -i "../../cpu_scheduler/0001-MultiQueue-Skiplist-Scheduler-version-0.193.patch"
 
     ### Setting version
