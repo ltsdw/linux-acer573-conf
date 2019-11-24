@@ -11,9 +11,8 @@ _srcname=linux-${_major}
 _clr=${_major}.11-868
 pkgbase=linux-shadow
 pkgver=${_major}.${_minor}
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
-url="https://github.com/clearlinux-pkgs/linux"
 license=('GPL2')
 makedepends=('bc' 'cpio' 'git' 'inetutils' 'kmod' 'libelf' 'xmlto')
 options=('!strip')
@@ -25,20 +24,12 @@ source=(
   "enable_additional_cpu_optimizations-$_gcc_more_v.tar.gz::https://github.com/graysky2/kernel_gcc_patch/archive/$_gcc_more_v.tar.gz"
 )
 
-export KBUILD_BUILD_HOST=shadow
+export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
 prepare() {
     cd ${_srcname}
-
-    ### Add upstream patches
-        msg2 "Add upstream patches"
-        patch -Np1 -i ../patch-${pkgver}
-
-    ### Add MuQSS patch	
-       msg2 'Add MuQSS patch'
-	patch -Np1 -i "../../cpu_scheduler/0001-MultiQueue-Skiplist-Scheduler-v0.195.patch"
 
     ### Setting version
         msg2 "Setting version..."
@@ -46,26 +37,29 @@ prepare() {
         echo "-$pkgrel" > localversion.10-pkgrel
         echo "${pkgbase#linux}" > localversion.20-pkgname
 
-    ### Add Clearlinux patches
-        cp -R ../../patches_cl ${srcdir}/clearlinuxpatch
-	 for i in ${srcdir}/clearlinuxpatch/*.patch; do
+    ### Add upstream patches
+        msg2 "Add upstream patches"
+        patch -Np1 -i ../patch-${pkgver}
+
+    ### Add some patches
+	 for i in ../../patches/*.patch; do
 	 msg2 "Applying patch ${i}..."
 	 patch -Np1 -i "${i}"
         done
 
-    ### Setting config
-        msg2 "Setting config..."
-        cp -Tf ../../config/config-custom-sdw ./.config
+    ### Add MuQSS patch	
+       msg2 'Add MuQSS patch'
+	patch -Np1 -i ../../cpu_scheduler/0001-MultiQueue-Skiplist-Scheduler-v0.195.patch
 
     ### Patch source to unlock additional gcc CPU optimizations
         # https://github.com/graysky2/kernel_gcc_patch
         msg2 "Applying enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v4.13+.patch ..."
         patch -Np1 -i "$srcdir/kernel_gcc_patch-$_gcc_more_v/enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v4.13+.patch"
 
-    ### do not run `make olddefconfig` as it sets default options
-        yes "" | make oldconfig
-        make prepare
-        yes "" | make config >/dev/null
+    ### Setting config
+        msg2 "Setting config..."
+        cp -Tf ../../config/config-custom-sdw ./.config
+        make olddefconfig
 
     ### Prepared version
         make -s kernelrelease > version
