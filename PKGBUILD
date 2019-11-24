@@ -47,7 +47,7 @@ prepare() {
 	 patch -Np1 -i "${i}"
         done
 
-    ### Add MuQSS patch	
+    ### Add MuQSS patch
        msg2 'Add MuQSS patch'
 	patch -Np1 -i ../../cpu_scheduler/0001-MultiQueue-Skiplist-Scheduler-v0.195.patch
 
