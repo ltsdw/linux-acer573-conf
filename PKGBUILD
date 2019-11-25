@@ -11,7 +11,7 @@ _srcname=linux-${_major}
 _clr=${_major}.11-868
 pkgbase=linux-shadow
 pkgver=${_major}.${_minor}
-pkgrel=3
+pkgrel=4
 arch=('x86_64')
 license=('GPL2')
 makedepends=('bc' 'cpio' 'git' 'inetutils' 'kmod' 'libelf' 'xmlto')
@@ -48,8 +48,12 @@ prepare() {
         done
 
     ### Add MuQSS patch
-       msg2 'Add MuQSS patch'
-	patch -Np1 -i ../../cpu_scheduler/0001-MultiQueue-Skiplist-Scheduler-v0.195.patch
+    #  msg2 'Add MuQSS patch'
+    #  patch -Np1 -i ../../cpu_scheduler/0001-MultiQueue-Skiplist-Scheduler-v0.195.patch
+
+    ### Add BMQ patch
+          msg2 'Add BMQ patch'
+          patch -Np1 -i ../../cpu_scheduler/bmq_v5.3-r2.patch
 
     ### Patch source to unlock additional gcc CPU optimizations
         # https://github.com/graysky2/kernel_gcc_patch
