@@ -42,7 +42,7 @@ prepare() {
         patch -Np1 -i ../patch-${pkgver}
 
     ### Add some patches
-	 for i in ../../patches/*.patch; do
+        for i in ../../patches/*.patch; do
 	 msg2 "Applying patch ${i}..."
 	 patch -Np1 -i "${i}"
         done
@@ -52,8 +52,8 @@ prepare() {
     #  patch -Np1 -i ../../cpu_scheduler/0001-MultiQueue-Skiplist-Scheduler-v0.195.patch
 
     ### Add BMQ patch
-          msg2 'Add BMQ patch'
-          patch -Np1 -i ../../cpu_scheduler/bmq_v5.3-r2.patch
+        msg2 'Add BMQ patch'
+        patch -Np1 -i ../../cpu_scheduler/bmq_v5.3-r2.patch
 
     ### Patch source to unlock additional gcc CPU optimizations
         # https://github.com/graysky2/kernel_gcc_patch
