@@ -5,13 +5,13 @@
 # Tweak kernel options prior to a build via nconfig
 _makenconfig=y
 
-_major=5.3
-_minor=12
+_major=5.4
+_minor=6
 _srcname=linux-${_major}
 _clr=${_major}.11-868
-pkgbase=linux-shadow
+pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
-pkgrel=5
+pkgrel=1
 arch=('x86_64')
 license=('GPL2')
 makedepends=('bc' 'cpio' 'git' 'inetutils' 'kmod' 'libelf' 'xmlto')
@@ -53,7 +53,7 @@ prepare() {
 
     ### Add BMQ patch
         msg2 'Add BMQ patch'
-        patch -Np1 -i ../../cpu_scheduler/bmq_v5.3-r2.patch
+        patch -Np1 -i ../../cpu_scheduler/bmq_v5.4-r1.patch
 
     ### Patch source to unlock additional gcc CPU optimizations
         # https://github.com/graysky2/kernel_gcc_patch
@@ -89,7 +89,6 @@ _package() {
     optdepends=('crda: to set the correct wireless channels of your country'
                 'linux-firmware: firmware images needed for some devices'
                 'modprobed-db: Keeps track of EVERY kernel module that has ever been probed - useful for those of us who make localmodconfig')
-    install=linux.install
 
     cd $_srcname
 
@@ -200,9 +199,9 @@ for _p in "${pkgname[@]}"; do
   }"
 done
 
-sha256sums=('78f3c397513cf4ff0f96aa7d09a921d003e08fa97c09e0bb71d88211b40567b2'
+sha256sums=('bf338980b1670bca287f9994b7441c2361907635879169c64ae78364efc5f491'
             'SKIP'
-            '3a98a756a61fea9474e15f3e1657bfdd512b6683be958d0a3630f037ff75de75'
+            '80853920a753762e058e35b754d3e0d16ec2fb485dfb84cc40fbdba383a8da17'
             '8c11086809864b5cef7d079f930bd40da8d0869c091965fa62e95de9a0fe13b5')
 
 validpgpkeys=(
