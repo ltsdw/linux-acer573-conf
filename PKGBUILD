@@ -5,8 +5,8 @@
 # Tweak kernel options prior to a build via nconfig
 _makenconfig=y
 
-_major=5.4
-_minor=6
+_major=5.6
+_minor=11
 _srcname=linux-${_major}
 _clr=${_major}.11-868
 pkgbase=linux-ltsdw
@@ -16,7 +16,7 @@ arch=('x86_64')
 license=('GPL2')
 makedepends=('bc' 'cpio' 'git' 'inetutils' 'kmod' 'libelf' 'xmlto')
 options=('!strip')
-_gcc_more_v='20190822'
+_gcc_more_v='20191217'
 source=(
   "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.xz"
   "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.sign"
@@ -53,12 +53,12 @@ prepare() {
 
     ### Add BMQ patch
         msg2 'Add BMQ patch'
-        patch -Np1 -i ../../cpu_scheduler/bmq_v5.4-r1.patch
+        patch -Np1 -i ../../cpu_scheduler/bmq_v5.6-r3.patch
 
     ### Patch source to unlock additional gcc CPU optimizations
         # https://github.com/graysky2/kernel_gcc_patch
-        msg2 "Applying enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v4.13+.patch ..."
-        patch -Np1 -i "$srcdir/kernel_gcc_patch-$_gcc_more_v/enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v4.13+.patch"
+        echo "Applying enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v5.5+.patch ..."
+        patch -Np1 -i "$srcdir/kernel_gcc_patch-$_gcc_more_v/enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v5.5+.patch"
 
     ### Setting config
         msg2 "Setting config..."
@@ -199,10 +199,10 @@ for _p in "${pkgname[@]}"; do
   }"
 done
 
-sha256sums=('bf338980b1670bca287f9994b7441c2361907635879169c64ae78364efc5f491'
+sha256sums=('e342b04a2aa63808ea0ef1baab28fc520bd031ef8cf93d9ee4a31d4058fcb622'
             'SKIP'
-            '80853920a753762e058e35b754d3e0d16ec2fb485dfb84cc40fbdba383a8da17'
-            '8c11086809864b5cef7d079f930bd40da8d0869c091965fa62e95de9a0fe13b5')
+            '5b6df91b676c34767677bfec2c99b90718b8d28b900c8180b860f31962b95de9'
+            '7a4a209de815f4bae49c7c577c0584c77257e3953ac4324d2aa425859ba657f5')
 
 validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
