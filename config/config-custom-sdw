@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86 5.6.11 Kernel Configuration
+# Linux/x86 5.6.12 Kernel Configuration
 #
 
 #
@@ -776,7 +776,8 @@ CONFIG_BLK_SCSI_REQUEST=y
 CONFIG_BLK_CGROUP_RWSTAT=y
 CONFIG_BLK_DEV_BSG=y
 # CONFIG_BLK_DEV_BSGLIB is not set
-# CONFIG_BLK_DEV_INTEGRITY is not set
+CONFIG_BLK_DEV_INTEGRITY=y
+CONFIG_BLK_DEV_INTEGRITY_T10=m
 # CONFIG_BLK_DEV_ZONED is not set
 CONFIG_BLK_DEV_THROTTLING=y
 # CONFIG_BLK_DEV_THROTTLING_LOW is not set
@@ -1770,7 +1771,7 @@ CONFIG_DM_MIRROR=m
 # CONFIG_DM_VERITY is not set
 # CONFIG_DM_SWITCH is not set
 # CONFIG_DM_LOG_WRITES is not set
-# CONFIG_DM_INTEGRITY is not set
+CONFIG_DM_INTEGRITY=m
 # CONFIG_TARGET_CORE is not set
 # CONFIG_FUSION is not set
 
@@ -4277,6 +4278,9 @@ CONFIG_INIT_STACK_NONE=y
 # end of Kernel hardening options
 # end of Security options
 
+CONFIG_XOR_BLOCKS=m
+CONFIG_ASYNC_CORE=m
+CONFIG_ASYNC_XOR=m
 CONFIG_CRYPTO=y
 
 #

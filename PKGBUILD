@@ -6,12 +6,11 @@
 _makenconfig=y
 
 _major=5.6
-_minor=11
+_minor=12
 _srcname=linux-${_major}
-_clr=${_major}.11-868
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
-pkgrel=2
+pkgrel=1
 arch=('x86_64')
 license=('GPL2')
 makedepends=('bc' 'cpio' 'git' 'inetutils' 'kmod' 'libelf' 'xmlto')
@@ -41,19 +40,15 @@ prepare() {
         msg2 "Add upstream patches"
         patch -Np1 -i ../patch-${pkgver}
 
-    ### Add some patches
-        for i in ../../patches/*.patch; do
-	 msg2 "Applying patch ${i}..."
-	 patch -Np1 -i "${i}"
-        done
-
-    ### Add MuQSS patch
-    #  msg2 'Add MuQSS patch'
-    #  patch -Np1 -i ../../cpu_scheduler/0001-MultiQueue-Skiplist-Scheduler-v0.195.patch
-
     ### Add BMQ patch
         msg2 'Add BMQ patch'
-        patch -Np1 -i ../../cpu_scheduler/bmq_v5.6-r3.patch
+        patch -Np1 -i ../../cpu_scheduler/bmq_v5.6-r4.patch
+
+    ### Add some patches
+        for i in ../../patches/*.patch; do
+	        msg2 "Applying patch ${i}..."
+	        patch -Np1 -i "${i}"
+        done
 
     ### Patch source to unlock additional gcc CPU optimizations
         # https://github.com/graysky2/kernel_gcc_patch
@@ -201,7 +196,7 @@ done
 
 sha256sums=('e342b04a2aa63808ea0ef1baab28fc520bd031ef8cf93d9ee4a31d4058fcb622'
             'SKIP'
-            '5b6df91b676c34767677bfec2c99b90718b8d28b900c8180b860f31962b95de9'
+            'ef84dbd5f9e7879a5b53d26ab766614775c22343ecf2ddd6beb969dcde1f20a6'
             '7a4a209de815f4bae49c7c577c0584c77257e3953ac4324d2aa425859ba657f5')
 
 validpgpkeys=(
