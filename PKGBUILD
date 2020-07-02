@@ -1,3 +1,8 @@
+_where="$PWD"
+
+cp "$_where"/config/config-custom-sdw "$_where"
+cp "$_where"/cpu_scheduler/prjc_v5.7-r2.patch "$_where"
+cp "$_where"/patches/* "$_where"
 
 ### BUILD OPTIONS
 # Set these variables to ANYTHING that is not null to enable them
@@ -5,8 +10,8 @@
 # Tweak kernel options prior to a build via nconfig
 _makenconfig=y
 
-_major=5.6
-_minor=12
+_major=5.7
+_minor=7
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
@@ -15,13 +20,37 @@ arch=('x86_64')
 license=('GPL2')
 makedepends=('bc' 'cpio' 'git' 'inetutils' 'kmod' 'libelf' 'xmlto')
 options=('!strip')
-_gcc_more_v='20191217'
+_gcc_more_v='20200615'
+
 source=(
-  "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.xz"
-  "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.sign"
-  "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
-  "enable_additional_cpu_optimizations-$_gcc_more_v.tar.gz::https://github.com/graysky2/kernel_gcc_patch/archive/$_gcc_more_v.tar.gz"
-)
+        "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.xz"
+        "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.sign"
+        "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
+        "enable_additional_cpu_optimizations-$_gcc_more_v.tar.gz::https://github.com/graysky2/kernel_gcc_patch/archive/$_gcc_more_v.tar.gz"
+        "config-custom-sdw"
+        "prjc_v5.7-r2.patch"
+        "0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
+        "0002-Initialize-ata-before-graphics.patch"
+        "0002-intel_idle-tweak-cpuidle-cstates.patch"
+        "0002-locking-rwsem-spin-faster.patch"
+        "0002-pci-pme-wakeups.patch"
+        "0007-v5.7-fsync.patch"
+       )
+
+sha256sums=(
+            'de8163bb62f822d84f7a3983574ec460060bf013a78ff79cd7c979ff1ec1d7e0'
+            'SKIP'
+            'dc533b4b9756d417d59c2514237401d2c5d0814d13083b4f5736df48cf9312f4'
+            '278fe9ffb29d92cc5220e7beac34a8e3a2006e714d16a21a0427069f9634af90'
+            'ad8332ddcf993c229e6c0332b94cc72745eeecd0b912aa5ea826b63a683556cf'
+            'b19d09da5beef3433702157ac7975710fc815ada9ed2a088136bb87e0c89dfd7'
+            '31dc68e84aecfb7d069efb1305049122c65694676be8b955634abcf0675922a2'
+            '3e1903d2f323a1c6ddaab1126ee22920cd8321e025a0fb3dfb16f7dea2d83551'
+            '8399e8cb5a34e0f702bde2c90b8db888774abb590c41bce4e7b5466bcf455d65'
+            '43cd10b3e9933981514da9619a87b338478f40e81954b56d7bd1000a8a041049'
+            '6be86f5dd9d8f2d66d33713b7b98c2021c78e0fa57d345e4bfbfd0d9541bb9a2'
+            'cd225e86d72eaf6c31ef3d7b20df397f4cc44ddd04389850691292cdf292b204'
+        )
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -38,26 +67,22 @@ prepare() {
 
     ### Add upstream patches
         msg2 "Add upstream patches"
-        patch -Np1 -i ../patch-${pkgver}
-
-    ### Add BMQ patch
-        msg2 'Add BMQ patch'
-        patch -Np1 -i ../../cpu_scheduler/bmq_v5.6-r4.patch
+        patch -Np1 -i $srcdir/patch-${pkgver}
 
     ### Add some patches
-        for i in ../../patches/*.patch; do
+        for i in $srcdir/*.patch; do
 	        msg2 "Applying patch ${i}..."
 	        patch -Np1 -i "${i}"
         done
 
     ### Patch source to unlock additional gcc CPU optimizations
         # https://github.com/graysky2/kernel_gcc_patch
-        echo "Applying enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v5.5+.patch ..."
-        patch -Np1 -i "$srcdir/kernel_gcc_patch-$_gcc_more_v/enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v5.5+.patch"
+        echo "Applying enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v10.1+_kernel_v5.7+.patch ..."
+        patch -Np1 -i "$srcdir/kernel_gcc_patch-$_gcc_more_v/enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v5.7+.patch"
 
     ### Setting config
         msg2 "Setting config..."
-        cp -Tf ../../config/config-custom-sdw ./.config
+        cp -Tf $srcdir/config-custom-sdw ./.config
         make olddefconfig
 
     ### Prepared version
@@ -69,7 +94,6 @@ prepare() {
         [[ -z "$_makenconfig" ]] || make nconfig
 
     ### Save configuration for later reuse
-
         cat ./.config > ../../config/config-custom-d
 }
 
@@ -193,11 +217,6 @@ for _p in "${pkgname[@]}"; do
     _package${_p#$pkgbase}
   }"
 done
-
-sha256sums=('e342b04a2aa63808ea0ef1baab28fc520bd031ef8cf93d9ee4a31d4058fcb622'
-            'SKIP'
-            'ef84dbd5f9e7879a5b53d26ab766614775c22343ecf2ddd6beb969dcde1f20a6'
-            '7a4a209de815f4bae49c7c577c0584c77257e3953ac4324d2aa425859ba657f5')
 
 validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
