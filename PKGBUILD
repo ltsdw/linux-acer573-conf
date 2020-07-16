@@ -11,7 +11,7 @@ cp "$_where"/patches/* "$_where"
 _makenconfig=y
 
 _major=5.7
-_minor=7
+_minor=8
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
@@ -40,7 +40,7 @@ source=(
 sha256sums=(
             'de8163bb62f822d84f7a3983574ec460060bf013a78ff79cd7c979ff1ec1d7e0'
             'SKIP'
-            'dc533b4b9756d417d59c2514237401d2c5d0814d13083b4f5736df48cf9312f4'
+            'eea2cb4ea7c2014b0daa6d702fc7087d017c55e6ea479434b1269626eda9fde5'
             '278fe9ffb29d92cc5220e7beac34a8e3a2006e714d16a21a0427069f9634af90'
             'ad8332ddcf993c229e6c0332b94cc72745eeecd0b912aa5ea826b63a683556cf'
             'b19d09da5beef3433702157ac7975710fc815ada9ed2a088136bb87e0c89dfd7'
