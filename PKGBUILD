@@ -1,7 +1,7 @@
 _where="$PWD"
 
 cp "$_where"/config/config-custom-sdw "$_where"
-cp "$_where"/cpu_scheduler/prjc_v5.7-r2.patch "$_where"
+cp "$_where"/cpu_scheduler/prjc_v5.8-r0.patch "$_where"
 cp "$_where"/patches/* "$_where"
 
 ### BUILD OPTIONS
@@ -10,8 +10,8 @@ cp "$_where"/patches/* "$_where"
 # Tweak kernel options prior to a build via nconfig
 _makenconfig=y
 
-_major=5.7
-_minor=8
+_major=5.8
+_minor=1
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
@@ -26,30 +26,74 @@ source=(
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.xz"
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.sign"
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
-        "enable_additional_cpu_optimizations-$_gcc_more_v.tar.gz::https://github.com/graysky2/kernel_gcc_patch/archive/$_gcc_more_v.tar.gz"
+        "0001-enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v5.8+.patch"
         "config-custom-sdw"
-        "prjc_v5.7-r2.patch"
+        "prjc_v5.8-r0.patch"
         "0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
         "0002-Initialize-ata-before-graphics.patch"
         "0002-intel_idle-tweak-cpuidle-cstates.patch"
         "0002-locking-rwsem-spin-faster.patch"
         "0002-pci-pme-wakeups.patch"
-        "0007-v5.7-fsync.patch"
+        "0007-v5.8-fsync.patch"
+        "0008-kconfig-add-500Hz-timer-interrupt-kernel-config-opti.patch"
+        "0009-01-x86-ptrace-Prevent-ptrace-from-clearing-the-FS-GS-se.patch"
+        "0009-02-x86-cpu-Add-unsafe_fsgsbase-to-enable-CR4.FSGSBASE.patch"
+        "0009-03-x86-fsgsbase-64-Add-intrinsics-for-FSGSBASE-instruct.patch"
+        "0009-04-x86-fsgsbase-64-Enable-FSGSBASE-instructions-in-help.patch"
+        "0009-05-x86-process-64-Make-save_fsgs_for_kvm-ready-for-FSGS.patch"
+        "0009-06-x86-process-64-Use-FSBSBASE-in-switch_to-if-availabl.patch"
+        "0009-07-x86-process-64-Use-FSGSBASE-instructions-on-thread-c.patch"
+        "0009-08-x86-speculation-swapgs-Check-FSGSBASE-in-enabling-SW.patch"
+        "0009-09-x86-entry-64-Switch-CR3-before-SWAPGS-in-paranoid-en.patch"
+        "0009-10-x86-entry-64-Introduce-the-FIND_PERCPU_BASE-macro.patch"
+        "0009-11-x86-entry-64-Handle-FSGSBASE-enabled-paranoid-entry-.patch"
+        "0009-12-x86-cpu-Enable-FSGSBASE-on-64bit-by-default-and-add-.patch"
+        "0009-13-x86-elf-Enumerate-kernel-FSGSBASE-capability-in-AT_H.patch"
+        "0009-14-Documentation-x86-64-Add-documentation-for-GS-FS-add.patch"
+        "0009-15-selftests-x86-fsgsbase-Test-GS-selector-on-ptracer-i.patch"
+        "0009-16-selftests-x86-fsgsbase-Test-ptracer-induced-GS-base-.patch"
+        "0009-17-selftests-x86-fsgsbase-Fix-a-comment-in-the-ptrace_w.patch"
+        "0009-18-selftests-x86-fsgsbase-Add-a-missing-memory-constrai.patch"
+        "0009-19-x86-ptrace-Fix-32-bit-PTRACE_SETREGS-vs-fsbase-and-g.patch"
+        "0009-20-selftests-x86-Add-a-syscall_arg_fault_64-test-for-ne.patch"
+        "0009-21-x86-fsgsbase-Fix-Xen-PV-support.patch"
        )
 
 sha256sums=(
-            'de8163bb62f822d84f7a3983574ec460060bf013a78ff79cd7c979ff1ec1d7e0'
+            'e7f75186aa0642114af8f19d99559937300ca27acaf7451b36d4f9b0f85cf1f5'
             'SKIP'
-            'eea2cb4ea7c2014b0daa6d702fc7087d017c55e6ea479434b1269626eda9fde5'
-            '278fe9ffb29d92cc5220e7beac34a8e3a2006e714d16a21a0427069f9634af90'
-            'ad8332ddcf993c229e6c0332b94cc72745eeecd0b912aa5ea826b63a683556cf'
-            'b19d09da5beef3433702157ac7975710fc815ada9ed2a088136bb87e0c89dfd7'
-            '31dc68e84aecfb7d069efb1305049122c65694676be8b955634abcf0675922a2'
+            '6f7a720d5037c69a8ae80f9c67063a1d26523ddf094411a436da4228426ee569'
+            '7dd5fa929a4c6b9cfcdbc7c0a4a9e6d02dbe0dc55e1704856c016515d5e42189'
+            '710904f54943312efe450625ad46e1b9a46b79c3efb9d8a5fdc0e1a86f380845'
+            'aa02d8dc476093eec104020bca4e47b0684381f3aa7d3caeb50c6b195c19a02f'
+            'f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6'
             '3e1903d2f323a1c6ddaab1126ee22920cd8321e025a0fb3dfb16f7dea2d83551'
             '8399e8cb5a34e0f702bde2c90b8db888774abb590c41bce4e7b5466bcf455d65'
             '43cd10b3e9933981514da9619a87b338478f40e81954b56d7bd1000a8a041049'
             '6be86f5dd9d8f2d66d33713b7b98c2021c78e0fa57d345e4bfbfd0d9541bb9a2'
             'cd225e86d72eaf6c31ef3d7b20df397f4cc44ddd04389850691292cdf292b204'
+            'b6095af58f7c09588b81e2cbf72ac97c89226d7fd6eb2f35dcaa2fd075a1ed95'
+            '28176dba00f48cc463d8f7774e716692c6f9b09d2c9f74b7089ed054f53064a7'
+            'b67efcb736d71946d9a6b2b30b66ea2ab5e1614f1021bfddac4785f0785ca44f'
+            'add1f2eaf3ec2569de3ad0523169eabf4eca430f2f61bbb15f5d49412b0c88eb'
+            'a94b3692d48003d5bc692bf3d3bac4d66bd0f6658bdbc0b6dfe4e923b9526821'
+            'a848547a315bfb2ac0f54f91acb2503a5cb72ebacf453c777ec71c4e8c3d12e6'
+            'bfef3650e5a7243e0ce291a0ee9b4871c79a40b877c4d522df6a976f5240e8eb'
+            '609d858a58db5665c01b9b23156df3419732a84926b6eeaf9ecdb9b337791393'
+            'd1dbb6e493edbc97fb65ee2e26421a93112883acd9b87e770123a8eb91ca2878'
+            'b59f666fca3aa257124b777088240eb6315a0b3646f6b7c14290c649fffb6e75'
+            '6332b72167e0549b7aab01590b14e7d20bbe939feb717da99ad5c1784fa4482e'
+            '1c372c9f5ff6865cffb36f9c19e72d8d6e3b58c39979627975ad6f4679ee62dd'
+            'abdb59437dc405694765ccc191ad86367d935cb297bf910049ae45b0a6757afd'
+            '6d99ab483776b0498bc73e15389a8eeac80d15a3d05a0485219297a95b41d791'
+            '4906042f6f1f37f849c03d5d0762ffe1acf8bf60b8b344b4f8f5beeeafada297'
+            '766da6a48152ddbc496f6633fc45108ce02b33bc61149a18b63a0e85f5dbf304'
+            '361dbfd94e815d194541ed8cef23d57f9d190c453f8eb5d39fb905ef68774a8f'
+            '5295f0f23d45181c050e530ecaec3efa50a0dc1480c720cacc86f62f2b544e5c'
+            '69ad72ddcf3c512b4ab22f495bcebff988aa98919ce5f460b281d191668aa1d3'
+            '016b5df77f0404485a8024559a463f89b6123404b4b33f3d2992c634ddfa0225'
+            'f42e7c5d0f4db5036bdf5dc84ffd56b6a3daca8f2b0f48ba024cc8b5774ef76a'
+            '1cf2e43fc049e7b6902115fc702671e817a6f8c1f524e999ac9b64fdc593ccc4'
         )
 
 export KBUILD_BUILD_HOST=archlinux
@@ -71,14 +115,9 @@ prepare() {
 
     ### Add some patches
         for i in $srcdir/*.patch; do
-	        msg2 "Applying patch ${i}..."
+	        echo -e "\033[0;31m Applying patch ${i}... \033[0m"
 	        patch -Np1 -i "${i}"
         done
-
-    ### Patch source to unlock additional gcc CPU optimizations
-        # https://github.com/graysky2/kernel_gcc_patch
-        echo "Applying enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v10.1+_kernel_v5.7+.patch ..."
-        patch -Np1 -i "$srcdir/kernel_gcc_patch-$_gcc_more_v/enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v5.7+.patch"
 
     ### Setting config
         msg2 "Setting config..."
