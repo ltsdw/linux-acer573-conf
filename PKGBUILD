@@ -11,7 +11,7 @@ cp "$_where"/patches/* "$_where"
 _makenconfig=y
 
 _major=5.8
-_minor=1
+_minor=7
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
@@ -20,7 +20,6 @@ arch=('x86_64')
 license=('GPL2')
 makedepends=('bc' 'cpio' 'git' 'inetutils' 'kmod' 'libelf' 'xmlto')
 options=('!strip')
-_gcc_more_v='20200615'
 
 source=(
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.xz"
@@ -57,12 +56,13 @@ source=(
         "0009-19-x86-ptrace-Fix-32-bit-PTRACE_SETREGS-vs-fsbase-and-g.patch"
         "0009-20-selftests-x86-Add-a-syscall_arg_fault_64-test-for-ne.patch"
         "0009-21-x86-fsgsbase-Fix-Xen-PV-support.patch"
+        "0010-workaround.patch"
        )
 
 sha256sums=(
             'e7f75186aa0642114af8f19d99559937300ca27acaf7451b36d4f9b0f85cf1f5'
             'SKIP'
-            '6f7a720d5037c69a8ae80f9c67063a1d26523ddf094411a436da4228426ee569'
+            'd394c98a7031fe2c88009082ccfdd8ec588dfbcf83a8d7969d016c4881e7028d'
             '7dd5fa929a4c6b9cfcdbc7c0a4a9e6d02dbe0dc55e1704856c016515d5e42189'
             'fcebb7e01669fc4a5c7d98f6468dd68de1e70dde3fb1728a16bc7f48a3476274'
             'aa02d8dc476093eec104020bca4e47b0684381f3aa7d3caeb50c6b195c19a02f'
@@ -94,7 +94,8 @@ sha256sums=(
             '016b5df77f0404485a8024559a463f89b6123404b4b33f3d2992c634ddfa0225'
             'f42e7c5d0f4db5036bdf5dc84ffd56b6a3daca8f2b0f48ba024cc8b5774ef76a'
             '1cf2e43fc049e7b6902115fc702671e817a6f8c1f524e999ac9b64fdc593ccc4'
-        )
+            '937f70a7c7eb15d1784dcfb1439a76eae2fe9a343043ebb29e7d52d07f9507e2'
+            )
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
