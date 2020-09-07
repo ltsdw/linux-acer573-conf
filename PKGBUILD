@@ -56,7 +56,6 @@ source=(
         "0009-19-x86-ptrace-Fix-32-bit-PTRACE_SETREGS-vs-fsbase-and-g.patch"
         "0009-20-selftests-x86-Add-a-syscall_arg_fault_64-test-for-ne.patch"
         "0009-21-x86-fsgsbase-Fix-Xen-PV-support.patch"
-        "0010-workaround.patch"
        )
 
 sha256sums=(
@@ -94,7 +93,6 @@ sha256sums=(
             '016b5df77f0404485a8024559a463f89b6123404b4b33f3d2992c634ddfa0225'
             'f42e7c5d0f4db5036bdf5dc84ffd56b6a3daca8f2b0f48ba024cc8b5774ef76a'
             '1cf2e43fc049e7b6902115fc702671e817a6f8c1f524e999ac9b64fdc593ccc4'
-            '937f70a7c7eb15d1784dcfb1439a76eae2fe9a343043ebb29e7d52d07f9507e2'
             )
 
 export KBUILD_BUILD_HOST=archlinux
