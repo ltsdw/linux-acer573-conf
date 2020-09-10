@@ -1,0 +1,15 @@
+diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
+index ad8a9df..673f826 100644
+--- a/drivers/gpu/drm/i915/gvt/kvmgt.c
++++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
+@@ -557,7 +557,9 @@ static size_t intel_vgpu_reg_rw_edid(struct intel_vgpu *vgpu, char *buf,
+ 		(struct vfio_edid_region *)kvmgt_vdev(vgpu)->region[i].data;
+ 	loff_t pos = *ppos & VFIO_PCI_OFFSET_MASK;
+ 
+-	if (pos < region->vfio_edid_regs.edid_offset) {
++    if (pos == NULL) {
++        ret = -EINVAL;
++    } else if (pos < region->vfio_edid_regs.edid_offset) {
+ 		ret = handle_edid_regs(vgpu, region, buf, count, pos, iswrite);
+ 	} else {
+ 		pos -= EDID_BLOB_OFFSET;

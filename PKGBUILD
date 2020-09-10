@@ -1,7 +1,7 @@
 _where="$PWD"
 
 cp "$_where"/config/config-custom-sdw "$_where"
-cp "$_where"/cpu_scheduler/prjc_v5.8-r0.patch "$_where"
+cp "$_where"/cpu_scheduler/prjc_v5.8-r2.patch "$_where"
 cp "$_where"/patches/* "$_where"
 
 ### BUILD OPTIONS
@@ -11,7 +11,7 @@ cp "$_where"/patches/* "$_where"
 _makenconfig=y
 
 _major=5.8
-_minor=7
+_minor=8
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
@@ -27,7 +27,7 @@ source=(
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
         "0001-enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v5.8+.patch"
         "config-custom-sdw"
-        "prjc_v5.8-r0.patch"
+        "prjc_v5.8-r2.patch"
         "0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
         "0002-Initialize-ata-before-graphics.patch"
         "0002-intel_idle-tweak-cpuidle-cstates.patch"
@@ -56,15 +56,16 @@ source=(
         "0009-19-x86-ptrace-Fix-32-bit-PTRACE_SETREGS-vs-fsbase-and-g.patch"
         "0009-20-selftests-x86-Add-a-syscall_arg_fault_64-test-for-ne.patch"
         "0009-21-x86-fsgsbase-Fix-Xen-PV-support.patch"
+        "0010-fix-null-pointer-for-broadwell.patch"
        )
 
 sha256sums=(
             'e7f75186aa0642114af8f19d99559937300ca27acaf7451b36d4f9b0f85cf1f5'
             'SKIP'
-            'd394c98a7031fe2c88009082ccfdd8ec588dfbcf83a8d7969d016c4881e7028d'
+            '4cfc08e0e26f824eb876b9ebd8bb29f3739a2790e949a514ce31f7f5d58c8c44'
             '7dd5fa929a4c6b9cfcdbc7c0a4a9e6d02dbe0dc55e1704856c016515d5e42189'
-            'fcebb7e01669fc4a5c7d98f6468dd68de1e70dde3fb1728a16bc7f48a3476274'
-            'aa02d8dc476093eec104020bca4e47b0684381f3aa7d3caeb50c6b195c19a02f'
+            '11083c71e27c8b8f0b8ac60876ce8139f01dd6162359f2f5efff0e0ef439140f'
+            '15add9c484fc32843060293d2dab69f5ac4627063483ec9f31c0a7b966be7e92'
             'f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6'
             '3e1903d2f323a1c6ddaab1126ee22920cd8321e025a0fb3dfb16f7dea2d83551'
             '8399e8cb5a34e0f702bde2c90b8db888774abb590c41bce4e7b5466bcf455d65'
@@ -93,6 +94,7 @@ sha256sums=(
             '016b5df77f0404485a8024559a463f89b6123404b4b33f3d2992c634ddfa0225'
             'f42e7c5d0f4db5036bdf5dc84ffd56b6a3daca8f2b0f48ba024cc8b5774ef76a'
             '1cf2e43fc049e7b6902115fc702671e817a6f8c1f524e999ac9b64fdc593ccc4'
+            'eed8fa2a7924e3706588bee0357edeadcc495cb22fe7055413a91d4b0a50826e'
             )
 
 export KBUILD_BUILD_HOST=archlinux
