@@ -1,7 +1,7 @@
-From a7372927fb39602a7182c0a1440cd560af65b19f Mon Sep 17 00:00:00 2001
+From e80810da6ed2cc3405bef446cc820ed89940fa4c Mon Sep 17 00:00:00 2001
 From: Alexandre Frade <admfrade@gmail.com>
 Date: Mon, 29 Jan 2018 17:26:15 +0000
-Subject: [PATCH 04/14] kconfig: add 500Hz timer interrupt kernel config option
+Subject: [PATCH 04/26] kconfig: add 500Hz timer interrupt kernel config option
 
 Signed-off-by: Alexandre Frade <admfrade@gmail.com>
 ---
@@ -43,6 +43,20 @@ index 38ef6d06888e..b4a1995149d0 100644
  	default 1000 if HZ_1000
  
  config SCHED_HRTICK
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 9270a4370d54..30d01e647417 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -169,7 +169,7 @@  
+ /*
+  * From 0 .. 200.  Higher means more swappy.
+  */
+-int vm_swappiness = 60;
++int vm_swappiness = 20;
+ 
+ static void set_task_reclaim_state(struct task_struct *task,
+ 				   struct reclaim_state *rs)
 -- 
-2.27.0
+2.28.0
 
