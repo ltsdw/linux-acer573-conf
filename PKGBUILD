@@ -1,7 +1,7 @@
 _where="$PWD"
 
 cp "$_where"/config/config-custom-sdw "$_where"
-cp "$_where"/cpu_scheduler/5.9_prjc_v5.9-r1.patch "$_where"
+cp "$_where"/cpu_scheduler/prjc_v5.10-r2.patch "$_where"
 cp "$_where"/patches/* "$_where"
 
 ### BUILD OPTIONS
@@ -10,8 +10,8 @@ cp "$_where"/patches/* "$_where"
 # Tweak kernel options prior to a build via nconfig
 _makenconfig=y
 
-_major=5.9
-_minor=3
+_major=5.10
+_minor=4
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
@@ -26,25 +26,26 @@ source=(
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.sign"
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
         "0000-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
-        "0000-enable_additional_cpu_optimizations_for_gcc_v9.1+_kernel_v5.8+.patch"
+        "0000-enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v5.8+.patch"
         "0001-initialize-ata-before-graphics.patch"
         "0001-intel_idle-tweak-cpuidle-cstates.patch"
         "0001-ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit.patch"
         "0001-kernel-time-reduce-ntp-wakeups.patch"
         "0001-locking-rwsem-spin-faster.patch"
         "0001-pci-pme-wakeups.patch"
-        "0002-v5.9-fsync.patch"
+        "0002-v5.10-fsync.patch"
         "0003-kconfig-add-500Hz-timer-interrupt-kernel-config-opti.patch"
-        "5.9_prjc_v5.9-r1.patch"
+        "0004-firmware_rome_error.patch"
+        "prjc_v5.10-r2.patch"
         "config-custom-sdw"
        )
 
 sha256sums=(
-            "3239a4ee1250bf2048be988cc8cb46c487b2c8a0de5b1b032d38394d5c6b1a06"
+            "dcdf99e43e98330d925016985bfbc7b83c66d367b714b2de0cbbfcbf83d8ca43"
             "SKIP"
-            "01bf91fd18b860f51659209352dc79f6c9bb29fb70a91e91ebc34d1291fe3cf1" 
+            "0089cea5866978effd79567fdfdffe0ae950747f32a56e5f00b98d38e686f5b1" 
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
-            "7dd5fa929a4c6b9cfcdbc7c0a4a9e6d02dbe0dc55e1704856c016515d5e42189"
+            "a915eb8cc9ff87a33a17b95ce9b9471f43e0849b9b38e88dc9cdc1f1f08bb8c2"
             "1ba1dc14899c5227ee561f57efb23ea8c72e433128a5cbe0cd7a53993d295889"
             "9fe1ffba6c1b6e6fd72e145a81732a388129dd7a1b9458105a0b03af41c49a2f"
             "2f4c91470f43af834d63917a94546372b2d982f4a79f2cea167cea9b43260128"
@@ -53,9 +54,10 @@ sha256sums=(
             "4c5e1545f586e04f2149ad376d6daf42e43cfab8588c72cd389980a9bfa2e4ee"
             "b302ba6c5bbe8ed19b20207505d513208fae1e678cf4d8e7ac0b154e5fe3f456"
             "222fb05515b0efb13c21ab5c8096904f4c8e67c148cc28203dad547a351d797e"
-            "a18dee6e4eeb677adef61b4e695cbb800a9aa88e3f6673a6dcfef8a840dee0cc"
-            "39901825300e7736f570e578918118bc58535768bf9ca1d8f78bc03201728e41"
-            )
+            "5e804e1f241ce542f3f0e83d274ede6aa4b0539e510fb9376f8106e8732ce69b"
+            "e308292fc42840a2366280ea7cf26314e92b931bb11f04ad4830276fc0326ee1"
+            "088e3059f20b879c8538ce00782e96c6639ba2ee1d73810043d297fa32f6fe10"
+        )
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
