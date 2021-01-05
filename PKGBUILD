@@ -56,7 +56,7 @@ sha256sums=(
             "222fb05515b0efb13c21ab5c8096904f4c8e67c148cc28203dad547a351d797e"
             "5e804e1f241ce542f3f0e83d274ede6aa4b0539e510fb9376f8106e8732ce69b"
             "e308292fc42840a2366280ea7cf26314e92b931bb11f04ad4830276fc0326ee1"
-            "088e3059f20b879c8538ce00782e96c6639ba2ee1d73810043d297fa32f6fe10"
+            "a0c168fd440f6db5273196a0179b93b5fc9a4d1f7b84f21327d7172591e87ace"
         )
 
 export KBUILD_BUILD_HOST=archlinux
@@ -96,7 +96,7 @@ prepare() {
         [[ -z "$_makenconfig" ]] || make nconfig
 
     ### Save configuration for later reuse
-        cat ./.config > ../../config/config-custom-sdw
+        cat .config > ../../config/config-custom-sdw
 
 }
 
