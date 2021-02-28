@@ -1,24 +1,26 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Arjan van de Ven <arjan@linux.intel.com>
-Date: Sat, 29 Apr 2017 22:24:34 +0000
-Subject: [PATCH] kernel: time: reduce ntp wakeups
+Date: Mon, 14 Mar 2016 11:10:58 -0600
+Subject: [PATCH] pci pme wakeups
 
+Reduce wakeups for PME checks, which are a workaround for miswired
+boards (sadly, too many of them) in laptops.
 ---
- kernel/time/ntp.c | 2 +-
+ drivers/pci/pci.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
-index 069ca78..22d82f2 100644
---- a/kernel/time/ntp.c
-+++ b/kernel/time/ntp.c
-@@ -513,7 +513,7 @@ static void sched_sync_hw_clock(struct timespec64 now,
- 		 * the algorithm is very likely to require a short-sleep retry
- 		 * after the above long sleep to synchronize ts_nsec.
- 		 */
--		next.tv_sec = 0;
-+		next.tv_sec = 10;
- 	}
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index c9338f9..6974fbf 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -62,7 +62,7 @@ struct pci_pme_device {
+ 	struct pci_dev *dev;
+ };
  
- 	/* Compute the needed delay that will get to tv_nsec == target_nsec */
+-#define PME_TIMEOUT 1000 /* How long between PME checks */
++#define PME_TIMEOUT 4000 /* How long between PME checks */
+ 
+ static void pci_dev_d3_sleep(struct pci_dev *dev)
+ {
 -- 
 https://clearlinux.org

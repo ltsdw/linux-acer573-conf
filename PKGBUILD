@@ -1,17 +1,14 @@
 _where="$PWD"
 
 cp "$_where"/config/config-custom-sdw "$_where"
-cp "$_where"/cpu_scheduler/prjc_v5.10-r2.patch "$_where"
+cp "$_where"/cpu_scheduler/prjc_v5.11-r0.patch "$_where"
 cp "$_where"/patches/* "$_where"
 
 ### BUILD OPTIONS
 # Set these variables to ANYTHING that is not null to enable them
 
-# Tweak kernel options prior to a build via nconfig
-_makenconfig=y
-
-_major=5.10
-_minor=4
+_major=5.11
+_minor=2
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
@@ -26,37 +23,33 @@ source=(
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.sign"
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
         "0000-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
-        "0000-enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v5.8+.patch"
+        "0000-enable_additional_cpu_optimizations_for_gcc_v11.0+_kernel_v5.8+.patch"
         "0001-initialize-ata-before-graphics.patch"
         "0001-intel_idle-tweak-cpuidle-cstates.patch"
         "0001-ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit.patch"
         "0001-kernel-time-reduce-ntp-wakeups.patch"
         "0001-locking-rwsem-spin-faster.patch"
-        "0001-pci-pme-wakeups.patch"
-        "0002-v5.10-fsync.patch"
+        "0002-v5.11-futex2_interface.patch"
         "0003-kconfig-add-500Hz-timer-interrupt-kernel-config-opti.patch"
-        "0004-firmware_rome_error.patch"
-        "prjc_v5.10-r2.patch"
+        "prjc_v5.11-r0.patch"
         "config-custom-sdw"
        )
 
 sha256sums=(
-            "dcdf99e43e98330d925016985bfbc7b83c66d367b714b2de0cbbfcbf83d8ca43"
+            "04f07b54f0d40adfab02ee6cbd2a942c96728d87c1ef9e120d0cb9ba3fe067b4"
             "SKIP"
-            "0089cea5866978effd79567fdfdffe0ae950747f32a56e5f00b98d38e686f5b1" 
+            "7a6d20308aed903a81a67e76e7c6cd294fb7cbb87f887e2168097da865def8ba" 
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
-            "a915eb8cc9ff87a33a17b95ce9b9471f43e0849b9b38e88dc9cdc1f1f08bb8c2"
+            "9b0c200b0dadfcfb1b3c42acd0c007e1d582a86abc6b04f3096e0535c8784ab6"
             "1ba1dc14899c5227ee561f57efb23ea8c72e433128a5cbe0cd7a53993d295889"
-            "9fe1ffba6c1b6e6fd72e145a81732a388129dd7a1b9458105a0b03af41c49a2f"
+            "8399e8cb5a34e0f702bde2c90b8db888774abb590c41bce4e7b5466bcf455d65"
             "2f4c91470f43af834d63917a94546372b2d982f4a79f2cea167cea9b43260128"
-            "c3512e1d000952fa189284a69195bc4f7b7ae91cb35bd55c639378ac4f666ca1"
+            "e894850bd606e8297f5e8911a12852d9a7b54cb99c9e7cad32c361b0dcef66dc"
             "43cd10b3e9933981514da9619a87b338478f40e81954b56d7bd1000a8a041049"
-            "4c5e1545f586e04f2149ad376d6daf42e43cfab8588c72cd389980a9bfa2e4ee"
-            "b302ba6c5bbe8ed19b20207505d513208fae1e678cf4d8e7ac0b154e5fe3f456"
+            "073e7b8ab48aa9abdb5cedb5c729a2f624275ebdbe1769476231c9e712145496"
             "222fb05515b0efb13c21ab5c8096904f4c8e67c148cc28203dad547a351d797e"
-            "5e804e1f241ce542f3f0e83d274ede6aa4b0539e510fb9376f8106e8732ce69b"
-            "e308292fc42840a2366280ea7cf26314e92b931bb11f04ad4830276fc0326ee1"
-            "a0c168fd440f6db5273196a0179b93b5fc9a4d1f7b84f21327d7172591e87ace"
+            "ad3ff525e9e7cd53e0f9a19350c144398dffa943573b9741f4cdb085b05efffe"
+            "e07d6cc9fa9c06a9a4ba091b94a84c21a08b241339e7ca39e0bf2fae4f6b5fc6"
         )
 
 export KBUILD_BUILD_HOST=archlinux
@@ -92,12 +85,10 @@ prepare() {
         msg2 "Prepared %s version %s" "$pkgbase" "$(<version)"
 
     ### Running make nconfig
-
-        [[ -z "$_makenconfig" ]] || make nconfig
+        make nconfig
 
     ### Save configuration for later reuse
         cat .config > ../../config/config-custom-sdw
-
 }
 
 build() {
