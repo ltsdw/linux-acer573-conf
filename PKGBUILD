@@ -8,7 +8,7 @@ cp "$_where"/patches/* "$_where"
 # Set these variables to ANYTHING that is not null to enable them
 
 _major=5.11
-_minor=4
+_minor=5
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
@@ -38,7 +38,7 @@ source=(
 sha256sums=(
             "04f07b54f0d40adfab02ee6cbd2a942c96728d87c1ef9e120d0cb9ba3fe067b4"
             "SKIP"
-            "d509c3900cf02a8d9f1692ffcc9d4a27d2b515ad50c0a231d5d00a125e9bd7a8" 
+            "afb0f641117643354cd08759549ad69f2cab55feafa22516eeb1a0ac7439e3c4"
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
             "9b0c200b0dadfcfb1b3c42acd0c007e1d582a86abc6b04f3096e0535c8784ab6"
             "1ba1dc14899c5227ee561f57efb23ea8c72e433128a5cbe0cd7a53993d295889"
@@ -49,7 +49,7 @@ sha256sums=(
             "073e7b8ab48aa9abdb5cedb5c729a2f624275ebdbe1769476231c9e712145496"
             "222fb05515b0efb13c21ab5c8096904f4c8e67c148cc28203dad547a351d797e"
             "e394d4b7721f55837a8364c8311cb06cb5a59484de8aa8731e38d1aff2b7014e"
-            "b02155d9d15abfa9d5887585f602feabf81f38fc8dcaf7bcc09655192c39e6b7"
+            "2da53647224e442144f15e69a9f925549922cd57be2eb9e6e80b2ee7a28bcf09"
         )
 
 export KBUILD_BUILD_HOST=archlinux
