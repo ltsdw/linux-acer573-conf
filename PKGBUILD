@@ -1,18 +1,18 @@
 _where="$PWD"
 
 cp "$_where"/config/config-custom-sdw "$_where"
-cp "$_where"/cpu_scheduler/prjc_v5.11-r0.patch "$_where"
+cp "$_where"/cpu_scheduler/prjc_v5.11-r2.patch "$_where"
 cp "$_where"/patches/* "$_where"
 
 ### BUILD OPTIONS
 # Set these variables to ANYTHING that is not null to enable them
 
 _major=5.11
-_minor=2
+_minor=4
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
-pkgrel=2
+pkgrel=1
 arch=('x86_64')
 license=('GPL2')
 makedepends=('bc' 'cpio' 'git' 'inetutils' 'kmod' 'libelf' 'xmlto')
@@ -31,14 +31,14 @@ source=(
         "0001-pci-pme-wakeups.patch"
         "0002-v5.11-futex2_interface.patch"
         "0003-kconfig-add-500Hz-timer-interrupt-kernel-config-opti.patch"
-        "prjc_v5.11-r0.patch"
+        "prjc_v5.11-r2.patch"
         "config-custom-sdw"
        )
 
 sha256sums=(
             "04f07b54f0d40adfab02ee6cbd2a942c96728d87c1ef9e120d0cb9ba3fe067b4"
             "SKIP"
-            "7a6d20308aed903a81a67e76e7c6cd294fb7cbb87f887e2168097da865def8ba" 
+            "d509c3900cf02a8d9f1692ffcc9d4a27d2b515ad50c0a231d5d00a125e9bd7a8" 
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
             "9b0c200b0dadfcfb1b3c42acd0c007e1d582a86abc6b04f3096e0535c8784ab6"
             "1ba1dc14899c5227ee561f57efb23ea8c72e433128a5cbe0cd7a53993d295889"
@@ -48,8 +48,8 @@ sha256sums=(
             "a4e64d65b512fd89fb4d8c66ca8436e55f477987a2ae944cec253d8b3b82e2ba"
             "073e7b8ab48aa9abdb5cedb5c729a2f624275ebdbe1769476231c9e712145496"
             "222fb05515b0efb13c21ab5c8096904f4c8e67c148cc28203dad547a351d797e"
-            "ad3ff525e9e7cd53e0f9a19350c144398dffa943573b9741f4cdb085b05efffe"
-            "feaa8970b806ed595e5215c31552c80775ec1552960d8fd0a186f3d2f2e13efd"
+            "e394d4b7721f55837a8364c8311cb06cb5a59484de8aa8731e38d1aff2b7014e"
+            "b02155d9d15abfa9d5887585f602feabf81f38fc8dcaf7bcc09655192c39e6b7"
         )
 
 export KBUILD_BUILD_HOST=archlinux

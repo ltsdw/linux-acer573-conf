@@ -525,7 +525,7 @@ index 000000000000..637c83ecbd6b
 +}
 +#endif /* _LINUX_SKIP_LIST_H */
 diff --git a/init/Kconfig b/init/Kconfig
-index 29ad68325028..2bf363b0e67c 100644
+index 29ad68325028..cba4fff25c17 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
 @@ -774,9 +774,39 @@ config GENERIC_SCHED_CLOCK
@@ -576,16 +576,23 @@ index 29ad68325028..2bf363b0e67c 100644
  	help
  	  This option adds support for automatic NUMA aware memory/task placement.
  	  The mechanism is quite primitive and is based on migrating memory when
-@@ -948,7 +979,7 @@ menuconfig CGROUP_SCHED
- 	  bandwidth allocation to such task groups. It uses cgroups to group
- 	  tasks.
- 
--if CGROUP_SCHED
-+if CGROUP_SCHED && !SCHED_ALT
- config FAIR_GROUP_SCHED
- 	bool "Group scheduling for SCHED_OTHER"
+@@ -954,6 +985,7 @@ config FAIR_GROUP_SCHED
  	depends on CGROUP_SCHED
-@@ -1204,6 +1235,7 @@ config CHECKPOINT_RESTORE
+ 	default CGROUP_SCHED
+ 
++if !SCHED_ALT
+ config CFS_BANDWIDTH
+ 	bool "CPU bandwidth provisioning for FAIR_GROUP_SCHED"
+ 	depends on FAIR_GROUP_SCHED
+@@ -976,6 +1008,7 @@ config RT_GROUP_SCHED
+ 	  realtime bandwidth for them.
+ 	  See Documentation/scheduler/sched-rt-group.rst for more information.
+ 
++endif #!SCHED_ALT
+ endif #CGROUP_SCHED
+ 
+ config UCLAMP_TASK_GROUP
+@@ -1204,6 +1237,7 @@ config CHECKPOINT_RESTORE
  
  config SCHED_AUTOGROUP
  	bool "Automatic process group scheduling"
@@ -830,10 +837,10 @@ index 5fc9c9b70862..eb6d7d87779f 100644
  obj-$(CONFIG_CPU_FREQ_GOV_SCHEDUTIL) += cpufreq_schedutil.o
 diff --git a/kernel/sched/alt_core.c b/kernel/sched/alt_core.c
 new file mode 100644
-index 000000000000..cd1b0b85af6d
+index 000000000000..7b99fdbb48df
 --- /dev/null
 +++ b/kernel/sched/alt_core.c
-@@ -0,0 +1,6800 @@
+@@ -0,0 +1,6910 @@
 +/*
 + *  kernel/sched/alt_core.c
 + *
@@ -888,7 +895,7 @@ index 000000000000..cd1b0b85af6d
 + */
 +EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_irq_tp);
 +
-+#define ALT_SCHED_VERSION "v5.11-r0"
++#define ALT_SCHED_VERSION "v5.11-r2"
 +
 +/* rt_prio(prio) defined in include/linux/sched/rt.h */
 +#define rt_task(p)		rt_prio((p)->prio)
@@ -1982,6 +1989,8 @@ index 000000000000..cd1b0b85af6d
 +	return ((p->flags & PF_KTHREAD) && (1 == p->nr_cpus_allowed));
 +}
 +
++#define MDF_FORCE_ENABLED	0x80
++
 +static void
 +__do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags);
 +
@@ -2001,6 +2010,7 @@ index 000000000000..cd1b0b85af6d
 +	preempt_disable();
 +	this_rq()->nr_pinned++;
 +	p->migration_disabled = 1;
++	p->migration_flags &= ~MDF_FORCE_ENABLED;
 +
 +	/*
 +	 * Violates locking rules! see comment in __do_set_cpus_allowed().
@@ -2599,6 +2609,7 @@ index 000000000000..cd1b0b85af6d
 +		if (p->cpus_ptr != &p->cpus_mask)
 +			__do_set_cpus_allowed(p, &p->cpus_mask, SCA_MIGRATE_ENABLE);
 +		p->migration_disabled = 0;
++		p->migration_flags |= MDF_FORCE_ENABLED;
 +		/* When p is migrate_disabled, rq->lock should be held */
 +		rq->nr_pinned--;
 +	}
@@ -2815,6 +2826,13 @@ index 000000000000..cd1b0b85af6d
 +
 +static inline bool ttwu_queue_cond(int cpu, int wake_flags)
 +{
++	/*
++	 * Do not complicate things with the async wake_list while the CPU is
++	 * in hotplug state.
++	 */
++	if (!cpu_active(cpu))
++		return false;
++
 +	/*
 +	 * If the CPU does not share cache, then queue the task on the
 +	 * remote rqs wakelist to avoid accessing remote data.
@@ -3196,7 +3214,7 @@ index 000000000000..cd1b0b85af6d
 +
 +/**
 + * try_invoke_on_locked_down_task - Invoke a function on task in fixed state
-+ * @p: Process for which the function is to be invoked.
++ * @p: Process for which the function is to be invoked, can be @current.
 + * @func: Function to invoke.
 + * @arg: Argument to function.
 + *
@@ -3214,12 +3232,11 @@ index 000000000000..cd1b0b85af6d
 + */
 +bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct task_struct *t, void *arg), void *arg)
 +{
-+	bool ret = false;
 +	struct rq_flags rf;
++	bool ret = false;        
 +	struct rq *rq;
 +
-+	lockdep_assert_irqs_enabled();
-+	raw_spin_lock_irq(&p->pi_lock);
++	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
 +	if (p->on_rq) {
 +		rq = __task_rq_lock(p, &rf);
 +		if (task_rq(p) == rq)
@@ -3236,7 +3253,7 @@ index 000000000000..cd1b0b85af6d
 +				ret = func(p, arg);
 +		}
 +	}
-+	raw_spin_unlock_irq(&p->pi_lock);
++	raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
 +	return ret;
 +}
 +
@@ -4597,7 +4614,7 @@ index 000000000000..cd1b0b85af6d
 +
 +#ifdef	CONFIG_SMP
 +
-+#define SCHED_RQ_NR_MIGRATION (32UL)
++#define SCHED_RQ_NR_MIGRATION (32U)
 +/*
 + * Migrate pending tasks in @rq to @dest_cpu
 + * Will try to migrate mininal of half of @rq nr_running tasks and
@@ -6253,15 +6270,6 @@ index 000000000000..cd1b0b85af6d
 +	return ret;
 +}
 +
-+/**
-+ * sys_sched_yield - yield the current processor to other threads.
-+ *
-+ * This function yields the current CPU to other tasks. It does this by
-+ * scheduling away the current task. If it still has the earliest deadline
-+ * it will be scheduled again as the next task.
-+ *
-+ * Return: 0.
-+ */
 +static void do_sched_yield(void)
 +{
 +	struct rq *rq;
@@ -6289,6 +6297,14 @@ index 000000000000..cd1b0b85af6d
 +	schedule();
 +}
 +
++/**
++ * sys_sched_yield - yield the current processor to other threads.
++ *
++ * This function yields the current CPU to other tasks. If there are no
++ * other threads running on this CPU then this function will return.
++ *
++ * Return: 0.
++ */
 +SYSCALL_DEFINE0(sched_yield)
 +{
 +	do_sched_yield();
@@ -7085,6 +7101,25 @@ index 000000000000..cd1b0b85af6d
 +		atomic_long_add(delta, &calc_load_tasks);
 +}
 +
++static void dump_rq_tasks(struct rq *rq, const char *loglvl)
++{
++	struct task_struct *g, *p;
++	int cpu = cpu_of(rq);
++
++	lockdep_assert_held(&rq->lock);
++
++	printk("%sCPU%d enqueued tasks (%u total):\n", loglvl, cpu, rq->nr_running);
++	for_each_process_thread(g, p) {
++		if (task_cpu(p) != cpu)
++			continue;
++
++		if (!task_on_rq_queued(p))
++			continue;
++
++		printk("%s\tpid: %d, name: %s\n", loglvl, p->pid, p->comm);
++	}
++}
++
 +int sched_cpu_dying(unsigned int cpu)
 +{
 +	struct rq *rq = cpu_rq(cpu);
@@ -7094,7 +7129,10 @@ index 000000000000..cd1b0b85af6d
 +	sched_tick_stop(cpu);
 +
 +	raw_spin_lock_irqsave(&rq->lock, flags);
-+	BUG_ON(rq->nr_running != 1 || rq_has_pinned_tasks(rq));
++	if (rq->nr_running != 1 || rq_has_pinned_tasks(rq)) {
++		WARN(true, "Dying CPU not properly vacated!");
++		dump_rq_tasks(rq, KERN_WARNING);
++	}
 +	raw_spin_unlock_irqrestore(&rq->lock, flags);
 +
 +	/*
@@ -7212,6 +7250,9 @@ index 000000000000..cd1b0b85af6d
 +	struct task_group *parent;
 +	struct list_head siblings;
 +	struct list_head children;
++#ifdef CONFIG_FAIR_GROUP_SCHED
++	unsigned long		shares;
++#endif
 +};
 +
 +/*
@@ -7413,6 +7454,35 @@ index 000000000000..cd1b0b85af6d
 +#ifdef CONFIG_SMP
 +void __cant_migrate(const char *file, int line)
 +{
++	static unsigned long prev_jiffy;
++
++	if (irqs_disabled())
++		return;
++
++	if (is_migration_disabled(current))
++		return;
++
++	if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
++		return;
++
++	if (preempt_count() > 0)
++		return;
++
++	if (current->migration_flags & MDF_FORCE_ENABLED)
++		return;
++
++	if (time_before(jiffies, prev_jiffy + HZ) && prev_jiffy)
++		return;
++	prev_jiffy = jiffies;
++
++	pr_err("BUG: assuming non migratable context at %s:%d\n", file, line);
++	pr_err("in_atomic(): %d, irqs_disabled(): %d, migration_disabled() %u pid: %d, name: %s\n",
++	       in_atomic(), irqs_disabled(), is_migration_disabled(current),
++	       current->pid, current->comm);
++
++	debug_show_held_locks(current);
++	dump_stack();
++	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
 +}
 +EXPORT_SYMBOL_GPL(__cant_migrate);
 +#endif
@@ -7601,7 +7671,54 @@ index 000000000000..cd1b0b85af6d
 +{
 +}
 +
++#ifdef CONFIG_FAIR_GROUP_SCHED
++static DEFINE_MUTEX(shares_mutex);
++
++int sched_group_set_shares(struct task_group *tg, unsigned long shares)
++{
++	/*
++	 * We can't change the weight of the root cgroup.
++	 */
++	if (&root_task_group == tg)
++		return -EINVAL;
++
++	shares = clamp(shares, scale_load(MIN_SHARES), scale_load(MAX_SHARES));
++
++	mutex_lock(&shares_mutex);
++	if (tg->shares == shares)
++		goto done;
++
++	tg->shares = shares;
++done:
++	mutex_unlock(&shares_mutex);
++	return 0;
++}
++
++static int cpu_shares_write_u64(struct cgroup_subsys_state *css,
++				struct cftype *cftype, u64 shareval)
++{
++	if (shareval > scale_load_down(ULONG_MAX))
++		shareval = MAX_SHARES;
++	return sched_group_set_shares(css_tg(css), scale_load(shareval));
++}
++
++static u64 cpu_shares_read_u64(struct cgroup_subsys_state *css,
++			       struct cftype *cft)
++{
++	struct task_group *tg = css_tg(css);
++
++	return (u64) scale_load_down(tg->shares);
++}
++#endif
++
 +static struct cftype cpu_legacy_files[] = {
++#ifdef CONFIG_FAIR_GROUP_SCHED
++	{
++		.name = "shares",
++		.read_u64 = cpu_shares_read_u64,
++		.write_u64 = cpu_shares_write_u64,
++	},
++#endif
 +	{ }	/* Terminate */
 +};
 +
@@ -7673,10 +7790,10 @@ index 000000000000..1212a031700e
 +{}
 diff --git a/kernel/sched/alt_sched.h b/kernel/sched/alt_sched.h
 new file mode 100644
-index 000000000000..cc2739f843af
+index 000000000000..51f11bf416f4
 --- /dev/null
 +++ b/kernel/sched/alt_sched.h
-@@ -0,0 +1,638 @@
+@@ -0,0 +1,683 @@
 +#ifndef ALT_SCHED_H
 +#define ALT_SCHED_H
 +
@@ -7738,6 +7855,51 @@ index 000000000000..cc2739f843af
 +# define SCHED_WARN_ON(x)	WARN_ONCE(x, #x)
 +#else
 +# define SCHED_WARN_ON(x)	({ (void)(x), 0; })
++#endif
++
++/*
++ * Increase resolution of nice-level calculations for 64-bit architectures.
++ * The extra resolution improves shares distribution and load balancing of
++ * low-weight task groups (eg. nice +19 on an autogroup), deeper taskgroup
++ * hierarchies, especially on larger systems. This is not a user-visible change
++ * and does not change the user-interface for setting shares/weights.
++ *
++ * We increase resolution only if we have enough bits to allow this increased
++ * resolution (i.e. 64-bit). The costs for increasing resolution when 32-bit
++ * are pretty high and the returns do not justify the increased costs.
++ *
++ * Really only required when CONFIG_FAIR_GROUP_SCHED=y is also set, but to
++ * increase coverage and consistency always enable it on 64-bit platforms.
++ */
++#ifdef CONFIG_64BIT
++# define NICE_0_LOAD_SHIFT	(SCHED_FIXEDPOINT_SHIFT + SCHED_FIXEDPOINT_SHIFT)
++# define scale_load(w)		((w) << SCHED_FIXEDPOINT_SHIFT)
++# define scale_load_down(w) \
++({ \
++	unsigned long __w = (w); \
++	if (__w) \
++		__w = max(2UL, __w >> SCHED_FIXEDPOINT_SHIFT); \
++	__w; \
++})
++#else
++# define NICE_0_LOAD_SHIFT	(SCHED_FIXEDPOINT_SHIFT)
++# define scale_load(w)		(w)
++# define scale_load_down(w)	(w)
++#endif
++
++#ifdef CONFIG_FAIR_GROUP_SCHED
++#define ROOT_TASK_GROUP_LOAD	NICE_0_LOAD
++
++/*
++ * A weight of 0 or 1 can cause arithmetics problems.
++ * A weight of a cfs_rq is the sum of weights of which entities
++ * are queued on this cfs_rq, so a weight of a entity should not be
++ * too large, so as the shares value of a task group.
++ * (The default weight is 1024 - so there's no practical
++ *  limitation from this.)
++ */
++#define MIN_SHARES		(1UL <<  1)
++#define MAX_SHARES		(1UL << 18)
 +#endif
 +
 +/* task_struct::on_rq states: */
@@ -7832,7 +7994,7 @@ index 000000000000..cc2739f843af
 +	u64 last_ts_switch;
 +	u64 clock_task;
 +
-+	unsigned long nr_running;
++	unsigned int  nr_running;
 +	unsigned long nr_uninterruptible;
 +
 +#ifdef CONFIG_SCHED_HRTICK
