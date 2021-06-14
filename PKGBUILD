@@ -1,14 +1,14 @@
 _where="$PWD"
 
-cp "$_where"/config/config-custom-sdw "$_where"
-cp "$_where"/cpu_scheduler/prjc_v5.11-r2.patch "$_where"
-cp "$_where"/patches/* "$_where"
+cp "$_where/config/config-custom-sdw" $_where
+cp "$_where/cpu_scheduler/cacule-5.12.patch" $_where
+cp "$_where/patches/"* $_where
 
 ### BUILD OPTIONS
 # Set these variables to ANYTHING that is not null to enable them
 
-_major=5.11
-_minor=5
+_major=5.12
+_minor=10
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
@@ -23,34 +23,38 @@ source=(
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.sign"
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
         "0000-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
-        "0000-enable_additional_cpu_optimizations_for_gcc_v11.0+_kernel_v5.8+.patch"
+        "0000-more-uarches-for-kernel-5.8+.patch"
+        "0001-enable-stateless-firmware-loading.patch"
         "0001-initialize-ata-before-graphics.patch"
         "0001-intel_idle-tweak-cpuidle-cstates.patch"
         "0001-ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit.patch"
         "0001-locking-rwsem-spin-faster.patch"
         "0001-pci-pme-wakeups.patch"
-        "0002-v5.11-futex2_interface.patch"
+        "0002-v5.12-futex2_interface.patch"
+        "0002-v5.12-winesync.patch"
         "0003-kconfig-add-500Hz-timer-interrupt-kernel-config-opti.patch"
-        "prjc_v5.11-r2.patch"
+        "cacule-5.12.patch"
         "config-custom-sdw"
        )
 
 sha256sums=(
-            "04f07b54f0d40adfab02ee6cbd2a942c96728d87c1ef9e120d0cb9ba3fe067b4"
+            "7d0df6f2bf2384d68d0bd8e1fe3e071d64364dcdc6002e7b5c87c92d48fac366"
             "SKIP"
-            "afb0f641117643354cd08759549ad69f2cab55feafa22516eeb1a0ac7439e3c4"
+            "034eb39ad49f3a26fc1b4ef799ef481ce35fe03e2b24131e9cd3d2805a99ad19"
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
-            "9b0c200b0dadfcfb1b3c42acd0c007e1d582a86abc6b04f3096e0535c8784ab6"
-            "1ba1dc14899c5227ee561f57efb23ea8c72e433128a5cbe0cd7a53993d295889"
-            "8399e8cb5a34e0f702bde2c90b8db888774abb590c41bce4e7b5466bcf455d65"
-            "2f4c91470f43af834d63917a94546372b2d982f4a79f2cea167cea9b43260128"
-            "43cd10b3e9933981514da9619a87b338478f40e81954b56d7bd1000a8a041049"
-            "a4e64d65b512fd89fb4d8c66ca8436e55f477987a2ae944cec253d8b3b82e2ba"
-            "073e7b8ab48aa9abdb5cedb5c729a2f624275ebdbe1769476231c9e712145496"
-            "222fb05515b0efb13c21ab5c8096904f4c8e67c148cc28203dad547a351d797e"
-            "e394d4b7721f55837a8364c8311cb06cb5a59484de8aa8731e38d1aff2b7014e"
-            "2da53647224e442144f15e69a9f925549922cd57be2eb9e6e80b2ee7a28bcf09"
-        )
+            "559f28d1c7207d3f564e4e21d680e6c1d834db58e715f0020b74d03cc0355d47"
+            "4ffbdd8ea0ac3a6502722e483625e6c801cd50adf16c02b8a773639d0cd521d9"
+            "fd211a0ebda270dd8ae8938ef61e69cfec217c2fdaae434cc73e16b6c3022036"
+            "7107c547c55fae3fb5aef86885e6f061ade5991114553227ad7af73d766d0e00"
+            "f5d29a664e06699b6e2237f0cd34ec4d14e7207155666df7fd237151649243d0"
+            "d5afd337dc6667d6e8256953542db55bb7e9af09654915d07d93d49695c7785c"
+            "72c2d9063d95fdc25125520b16a72d2c361878d7767aeb3e456becfdd2f05f3d"
+            "fc0a3274e3285278e925f4b3bfe803e5e610344bebe5bba063ba202dbaff49c8"
+            "f7c68f43599c53ce19a14e6f296e5e0820257e80acb9f52a1dec036d0d9a62ab"
+            "5609fcd112be163b3be0f5aa8ba58a246605e77e0cd9aa3b29eb8a968335e26f"
+            "a90ec03375bf97c06bf2ca3f1fd0224deee8408077f71447326b2796b53652a1"
+            "SKIP"
+            )
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
