@@ -1,14 +1,14 @@
 _where="$PWD"
 
 cp "$_where/config/config-custom-sdw" $_where
-cp "$_where/cpu_scheduler/cacule-5.12.patch" $_where
+cp "$_where/cpu_scheduler/"* $_where
 cp "$_where/patches/"* $_where
 
 ### BUILD OPTIONS
 # Set these variables to ANYTHING that is not null to enable them
 
-_major=5.12
-_minor=10
+_major=5.13
+_minor=2
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw
 pkgver=${_major}.${_minor}
@@ -30,17 +30,17 @@ source=(
         "0001-ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit.patch"
         "0001-locking-rwsem-spin-faster.patch"
         "0001-pci-pme-wakeups.patch"
-        "0002-v5.12-futex2_interface.patch"
-        "0002-v5.12-winesync.patch"
-        "0003-kconfig-add-500Hz-timer-interrupt-kernel-config-opti.patch"
-        "cacule-5.12.patch"
+        "patches/0002-v5.13-futex2_interface.patch"
+        "patches/0002-v5.13-winesync.patch"
+        "patches/0003-le9db-5.13-rc2-mg-LRU-v3.patch"
+        "cacule-5.13.patch"
         "config-custom-sdw"
        )
 
 sha256sums=(
-            "7d0df6f2bf2384d68d0bd8e1fe3e071d64364dcdc6002e7b5c87c92d48fac366"
+            "3f6baa97f37518439f51df2e4f3d65a822ca5ff016aa8e60d2cc53b95a6c89d9"
             "SKIP"
-            "034eb39ad49f3a26fc1b4ef799ef481ce35fe03e2b24131e9cd3d2805a99ad19"
+            "aba543eb34624a806c26a5c6a5d0605fa8557dee5c76db503263bb6cc0f4e5a0"
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
             "559f28d1c7207d3f564e4e21d680e6c1d834db58e715f0020b74d03cc0355d47"
             "4ffbdd8ea0ac3a6502722e483625e6c801cd50adf16c02b8a773639d0cd521d9"
@@ -49,10 +49,10 @@ sha256sums=(
             "f5d29a664e06699b6e2237f0cd34ec4d14e7207155666df7fd237151649243d0"
             "d5afd337dc6667d6e8256953542db55bb7e9af09654915d07d93d49695c7785c"
             "72c2d9063d95fdc25125520b16a72d2c361878d7767aeb3e456becfdd2f05f3d"
-            "fc0a3274e3285278e925f4b3bfe803e5e610344bebe5bba063ba202dbaff49c8"
-            "f7c68f43599c53ce19a14e6f296e5e0820257e80acb9f52a1dec036d0d9a62ab"
-            "5609fcd112be163b3be0f5aa8ba58a246605e77e0cd9aa3b29eb8a968335e26f"
-            "a90ec03375bf97c06bf2ca3f1fd0224deee8408077f71447326b2796b53652a1"
+            "9ec679871cba674cf876ba836cde969296ae5034bcc10e1ec39b372e6e07aab0"
+            "034d12a73b507133da2c69a34d61efd2f6b6618549650aa26d748142d22002e1"
+            "897b358addd43945be456f088acdfb1283c98514f733a368f621bcc892cc686b"
+            "97d7f9ebecfe12d3b4be73f530c110936cc9bdc5a08303af09711398b64d418d"
             "SKIP"
             )
 
