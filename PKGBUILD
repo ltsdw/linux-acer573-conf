@@ -8,14 +8,14 @@ cp "$_where/patches/"* $_where
 # Set these variables to ANYTHING that is not null to enable them
 
 _major=5.13
-_minor=2
+_minor=4
 _srcname=linux-${_major}
-pkgbase=linux-ltsdw
+pkgbase=linux-ltsdw-lto
 pkgver=${_major}.${_minor}
 pkgrel=1
 arch=('x86_64')
 license=('GPL2')
-makedepends=('bc' 'cpio' 'git' 'inetutils' 'kmod' 'libelf' 'xmlto')
+makedepends=('bc' 'cpio' 'git' 'inetutils' 'kmod' 'libelf' 'xmlto' 'clang' 'llvm')
 options=('!strip')
 
 source=(
@@ -32,7 +32,7 @@ source=(
         "0001-pci-pme-wakeups.patch"
         "patches/0002-v5.13-futex2_interface.patch"
         "patches/0002-v5.13-winesync.patch"
-        "patches/0003-le9db-5.13-rc2-mg-LRU-v3.patch"
+        "patches/0003-le9db-5.13.patch"
         "cacule-5.13.patch"
         "config-custom-sdw"
        )
@@ -40,7 +40,7 @@ source=(
 sha256sums=(
             "3f6baa97f37518439f51df2e4f3d65a822ca5ff016aa8e60d2cc53b95a6c89d9"
             "SKIP"
-            "aba543eb34624a806c26a5c6a5d0605fa8557dee5c76db503263bb6cc0f4e5a0"
+            "66c6822e23b5fe2e82c105cc5c267760921e1c5632aeb9e7e91a3853c527777b"
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
             "559f28d1c7207d3f564e4e21d680e6c1d834db58e715f0020b74d03cc0355d47"
             "4ffbdd8ea0ac3a6502722e483625e6c801cd50adf16c02b8a773639d0cd521d9"
@@ -51,8 +51,8 @@ sha256sums=(
             "72c2d9063d95fdc25125520b16a72d2c361878d7767aeb3e456becfdd2f05f3d"
             "9ec679871cba674cf876ba836cde969296ae5034bcc10e1ec39b372e6e07aab0"
             "034d12a73b507133da2c69a34d61efd2f6b6618549650aa26d748142d22002e1"
-            "897b358addd43945be456f088acdfb1283c98514f733a368f621bcc892cc686b"
-            "97d7f9ebecfe12d3b4be73f530c110936cc9bdc5a08303af09711398b64d418d"
+            "56cc0ffee3005fc81b0488348861ceea035ebd1356eec1512c53e786e206ff06"
+            "e131e63149b7beb83e172337c74e3ab6b2d48888946edef6cd77beab93ca5d2a"
             "SKIP"
             )
 
@@ -82,14 +82,17 @@ prepare() {
     ### Setting config
         msg2 "Setting config..."
         cp -Tf $srcdir/config-custom-sdw ./.config
-        make olddefconfig
+        make LLVM=1 LLVM_IAS=1 -j$(nproc) olddefconfig
+
+    ### scripts/config
+        ./scripts/config -e LTO_CLANG_THIN
 
     ### Prepared version
-        make -s kernelrelease > version
+        make LLVM=1 LLVM_IAS=1 -j$(nproc) -s kernelrelease > version
         msg2 "Prepared %s version %s" "$pkgbase" "$(<version)"
 
     ### Running make nconfig
-        make nconfig
+    make LLVM=1 LLVM_IAS=1 -j$(nproc) nconfig
 
     ### Save configuration for later reuse
         cat .config > ../../config/config-custom-sdw
@@ -97,7 +100,7 @@ prepare() {
 
 build() {
     cd ${_srcname}
-    make bzImage modules
+    make LLVM=1 LLVM_IAS=1 -j$(nproc) bzImage modules
 }
 
 _package() {
@@ -115,13 +118,13 @@ _package() {
     msg2 "Installing boot image..."
     # systemd expects to find the kernel here to allow hibernation
     # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
-    install -Dm644 "$(make -s image_name)" "$modulesdir/vmlinuz"
+    install -Dm644 "$(make LLVM=1 LLVM_IAS=1 -j$(nproc) -s image_name)" "$modulesdir/vmlinuz"
 
     # Used by mkinitcpio to name the kernel
     echo "$pkgbase" | install -Dm644 /dev/stdin "$modulesdir/pkgbase"
 
     msg2 "Installing modules..."
-    make INSTALL_MOD_PATH="$pkgdir/usr" modules_install
+    make LLVM=1 LLVM_IAS=1 -j$(nproc) INSTALL_MOD_PATH="$pkgdir/usr" modules_install
 
     # remove build and source links
     rm "$modulesdir"/{source,build}
