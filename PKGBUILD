@@ -8,7 +8,7 @@ cp "$_where/patches/"* $_where
 # Set these variables to ANYTHING that is not null to enable them
 
 _major=5.13
-_minor=4
+_minor=5
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw-lto
 pkgver=${_major}.${_minor}
@@ -22,43 +22,52 @@ source=(
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.xz"
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_major}.tar.sign"
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
-        "0000-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
-        "0000-more-uarches-for-kernel-5.8+.patch"
-        "0001-enable-stateless-firmware-loading.patch"
-        "0001-initialize-ata-before-graphics.patch"
-        "0001-intel_idle-tweak-cpuidle-cstates.patch"
-        "0001-ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit.patch"
-        "0001-locking-rwsem-spin-faster.patch"
         "0001-pci-pme-wakeups.patch"
-        "patches/0002-v5.13-futex2_interface.patch"
-        "patches/0002-v5.13-winesync.patch"
-        "patches/0003-le9db-5.13.patch"
+        "0001-do-accept-in-LIFO-order-for-cache-efficiency.patch"
+        "0002-v5.13-futex2_interface.patch"
+        "0001-ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit.patch"
+        "0001-intel_idle-tweak-cpuidle-cstates.patch"
+        "0001-initialize-ata-before-graphics.patch"
+        "0001-give-rdrand-some-credit.patch"
+        "0001-increase-the-ext4-default-commit-age.patch"
+        "0001-smpboot-reuse-timer-calibration.patch"
+        "0001-locking-rwsem-spin-faster.patch"
+        "0001-enable-stateless-firmware-loading.patch"
+        "0000-more-uarches-for-kernel-5.8+.patch"
+        "0002-v5.13-winesync.patch"
+        "0000-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
+        "0003-le9db-5.13.patch"
         "cacule-5.13.patch"
         "config-custom-sdw"
        )
 
 sha256sums=(
             "3f6baa97f37518439f51df2e4f3d65a822ca5ff016aa8e60d2cc53b95a6c89d9"
-            "SKIP"
-            "66c6822e23b5fe2e82c105cc5c267760921e1c5632aeb9e7e91a3853c527777b"
-            "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
-            "559f28d1c7207d3f564e4e21d680e6c1d834db58e715f0020b74d03cc0355d47"
-            "4ffbdd8ea0ac3a6502722e483625e6c801cd50adf16c02b8a773639d0cd521d9"
-            "fd211a0ebda270dd8ae8938ef61e69cfec217c2fdaae434cc73e16b6c3022036"
-            "7107c547c55fae3fb5aef86885e6f061ade5991114553227ad7af73d766d0e00"
-            "f5d29a664e06699b6e2237f0cd34ec4d14e7207155666df7fd237151649243d0"
-            "d5afd337dc6667d6e8256953542db55bb7e9af09654915d07d93d49695c7785c"
+            "168b26fe2060901e6f46cc744d1e95bee3a8ea414b58372b1c134d71ac05c876"
+            "113a47d893d324fdb9528b5c602eb7cba2439dcf271b7dcd522316d8af610b45"
             "72c2d9063d95fdc25125520b16a72d2c361878d7767aeb3e456becfdd2f05f3d"
+            "e11a3d3c29496a115b5b140db79ea9c4e1aac5db15c39e5b650e4e4a66d5b903"
             "9ec679871cba674cf876ba836cde969296ae5034bcc10e1ec39b372e6e07aab0"
+            "f5d29a664e06699b6e2237f0cd34ec4d14e7207155666df7fd237151649243d0"
+            "7107c547c55fae3fb5aef86885e6f061ade5991114553227ad7af73d766d0e00"
+            "fd211a0ebda270dd8ae8938ef61e69cfec217c2fdaae434cc73e16b6c3022036"
+            "abacadd30f8be5d7dba827410b8922eb880480b1f942352e63a066c6562c0551"
+            "45e8f4b221e5cb9f6cd80079d74684d76032c2f7f462b102c988a2bcd301eb45"
+            "0a7a3dfe2558f1ad9d4767893dffb6386c907e8893963efba4c93111aa783fbc"
+            "d5afd337dc6667d6e8256953542db55bb7e9af09654915d07d93d49695c7785c"
+            "4ffbdd8ea0ac3a6502722e483625e6c801cd50adf16c02b8a773639d0cd521d9"
+            "559f28d1c7207d3f564e4e21d680e6c1d834db58e715f0020b74d03cc0355d47"
             "034d12a73b507133da2c69a34d61efd2f6b6618549650aa26d748142d22002e1"
+            "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
             "56cc0ffee3005fc81b0488348861ceea035ebd1356eec1512c53e786e206ff06"
-            "e131e63149b7beb83e172337c74e3ab6b2d48888946edef6cd77beab93ca5d2a"
+            "f42a65d6211b3861c132c72160274252cd825c9217727d0fca9c09e1f58dbf90"
             "SKIP"
             )
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
+export CFLAGS="-march=native -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math"
 
 prepare() {
     cd ${_srcname}
@@ -228,4 +237,3 @@ validpgpkeys=(
   'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
   '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
 )
-
