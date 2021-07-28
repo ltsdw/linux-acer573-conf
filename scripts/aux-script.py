@@ -94,7 +94,7 @@ class PKGBUILD:
         self.sha256sums = self.returnSha256(getcwd(), ['patches', 'cpu_scheduler', 'config'],
                                             [linux, sign, patch])
 
-    def updatePakageBuild(self) -> None:
+    def updatePackageBuild(self) -> None:
         is_open: bool = False
         self.source = self.returnSource(['patches', 'cpu_scheduler', 'config'])
 
@@ -125,5 +125,5 @@ if __name__ == '__main__':
 
     re_pkgbuild = PKGBUILD(5.13, 5)
     re_pkgbuild.download()
-    re_pkgbuild.updatePakageBuild()
+    re_pkgbuild.updatePackageBuild()
 
