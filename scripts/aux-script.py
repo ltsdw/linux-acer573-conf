@@ -5,16 +5,6 @@ from typing import List
 class PKGBUILD:
 
     def __init__(self, _major: float, _minor: int, _pkgrel: int) -> None:
-        from sys import exit
-        from os.path import exists
-        from os import chdir
-
-
-        if not exists('PKGBUILD'):
-            chdir('..')
-            if not exists('PKGBUILD'):
-                exit('No PKGBUILD found!')
-
         self._major: float = _major
         self._minor: int = _minor
         self._pkgrel: int = _pkgrel
@@ -27,7 +17,7 @@ class PKGBUILD:
 
     def goToPkgbuildPath(self) -> None:
         from sys import argv
-        from os.path import join, abspath
+        from os.path import join, abspath, exists
         from os import chdir, getcwd
 
 
@@ -46,6 +36,11 @@ class PKGBUILD:
             chdir(abspath(join(removeBinFromPath(argv0), '..')))
         else:
             chdir(getcwd())
+
+        if not exists('PKGBUILD'):
+            chdir('..')
+            if not exists('PKGBUILD'):
+                exit('No PKGBUILD found!')
 
     def returnSource(self, directories: List[str]) -> str:
         from os import walk
