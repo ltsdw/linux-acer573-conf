@@ -3,19 +3,17 @@
 from typing import List
 
 class PKGBUILD:
+
     def __init__(self, _major: float, _minor: int, _pkgrel: int) -> None:
         from sys import exit
-        from os.path import exists, join, abspath
-        from os import getcwd, chdir
+        from os.path import exists
+        from os import chdir
 
-        cwd: str = getcwd()
- 
-        if exists(abspath(join(cwd, 'PKGBUILD'))):
-            chdir(cwd)
-        elif exists(abspath(join(cwd, '..', 'PKGBUILD'))):
-            chdir(abspath(join(cwd, '..')))
-        else:
-            exit('No PKGBUILD found!')
+
+        if not exists('PKGBUILD'):
+            chdir('..')
+            if not exists('PKGBUILD'):
+                exit('No PKGBUILD found!')
 
         self._major: float = _major
         self._minor: int = _minor
@@ -26,6 +24,28 @@ class PKGBUILD:
         self.patch_url: str
         self.source: str
         self.sha256sums: str = ''
+
+    def goToPkgbuildPath(self) -> None:
+        from sys import argv
+        from os.path import join, abspath
+        from os import chdir, getcwd
+
+
+        def removeBinFromPath(argv0: str) -> str:
+            directories = argv0.split('/')[:-1]
+            pkgbuild_path = '/'
+
+            for directory in directories:
+                pkgbuild_path = join(pkgbuild_path, directory)
+
+            return pkgbuild_path
+
+        argv0: str = argv[0]
+
+        if (argv0[0] == '/'):
+            chdir(abspath(join(removeBinFromPath(argv0), '..')))
+        else:
+            chdir(getcwd())
 
     def returnSource(self, directories: List[str]) -> str:
         from os import walk
@@ -128,9 +148,14 @@ class PKGBUILD:
                 elif not is_open:
                     pkgbuild.write(line)
 
-if __name__ == '__main__':
 
+def main() -> None:
     re_pkgbuild = PKGBUILD(5.13, 8, 1)
+    re_pkgbuild.goToPkgbuildPath()
     re_pkgbuild.download()
     re_pkgbuild.updatePackageBuild()
+
+
+if __name__ == '__main__':
+    main()
 
