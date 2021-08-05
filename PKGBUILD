@@ -8,7 +8,7 @@ cp "$_where/patches/"* $_where
 # Set these variables to ANYTHING that is not null to enable them
 
 _major=5.13
-_minor=5
+_minor=8
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw-lto
 pkgver=${_major}.${_minor}
@@ -24,6 +24,7 @@ source=(
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
         "0001-pci-pme-wakeups.patch"
         "0001-do-accept-in-LIFO-order-for-cache-efficiency.patch"
+        "0000-deault-to-CC_OPTIMIZE_FOR_PERFORMANCE_O3-for-clang.patch"
         "0002-v5.13-futex2_interface.patch"
         "0001-ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit.patch"
         "0001-intel_idle-tweak-cpuidle-cstates.patch"
@@ -34,6 +35,7 @@ source=(
         "0001-locking-rwsem-spin-faster.patch"
         "0001-enable-stateless-firmware-loading.patch"
         "0000-more-uarches-for-kernel-5.8+.patch"
+        "0002-v5.13-fsync.patch"
         "0002-v5.13-winesync.patch"
         "0000-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
         "0003-le9db-5.13.patch"
@@ -44,9 +46,10 @@ source=(
 sha256sums=(
             "3f6baa97f37518439f51df2e4f3d65a822ca5ff016aa8e60d2cc53b95a6c89d9"
             "168b26fe2060901e6f46cc744d1e95bee3a8ea414b58372b1c134d71ac05c876"
-            "113a47d893d324fdb9528b5c602eb7cba2439dcf271b7dcd522316d8af610b45"
+            "dfbaaf312cd69021fbe8ab597460aa961b8d2944efca35caa26b36fce43e616d"
             "72c2d9063d95fdc25125520b16a72d2c361878d7767aeb3e456becfdd2f05f3d"
             "e11a3d3c29496a115b5b140db79ea9c4e1aac5db15c39e5b650e4e4a66d5b903"
+            "7bbb41762567e41c1153d83a73a5e524808253aa0be57227e432ff477a88c7d8"
             "9ec679871cba674cf876ba836cde969296ae5034bcc10e1ec39b372e6e07aab0"
             "f5d29a664e06699b6e2237f0cd34ec4d14e7207155666df7fd237151649243d0"
             "7107c547c55fae3fb5aef86885e6f061ade5991114553227ad7af73d766d0e00"
@@ -57,10 +60,11 @@ sha256sums=(
             "d5afd337dc6667d6e8256953542db55bb7e9af09654915d07d93d49695c7785c"
             "4ffbdd8ea0ac3a6502722e483625e6c801cd50adf16c02b8a773639d0cd521d9"
             "559f28d1c7207d3f564e4e21d680e6c1d834db58e715f0020b74d03cc0355d47"
+            "89d837bfea3515504b1c99fc881ebdc4f15e2999558127a263e795fc69408a39"
             "034d12a73b507133da2c69a34d61efd2f6b6618549650aa26d748142d22002e1"
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
             "56cc0ffee3005fc81b0488348861ceea035ebd1356eec1512c53e786e206ff06"
-            "f42a65d6211b3861c132c72160274252cd825c9217727d0fca9c09e1f58dbf90"
+            "d498816b89a46bde060cbea77313ec14e293f820ea76c682870e894e6ff4af22"
             "SKIP"
             )
 

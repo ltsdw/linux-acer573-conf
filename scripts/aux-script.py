@@ -3,18 +3,23 @@
 from typing import List
 
 class PKGBUILD:
-    def __init__(self, _major: float, _minor: int) -> None:
+    def __init__(self, _major: float, _minor: int, _pkgrel: int) -> None:
         from sys import exit
         from os.path import exists, join, abspath
         from os import getcwd, chdir
 
-        chdir(abspath(join(getcwd(), '..')))
-
-        if not exists('PKGBUILD'):
+        cwd: str = getcwd()
+ 
+        if exists(abspath(join(cwd, 'PKGBUILD'))):
+            chdir(cwd)
+        elif exists(abspath(join(cwd, '..', 'PKGBUILD'))):
+            chdir(abspath(join(cwd, '..')))
+        else:
             exit('No PKGBUILD found!')
 
         self._major: float = _major
         self._minor: int = _minor
+        self._pkgrel: int = _pkgrel
         self.pkgver: str = f'{self._major}.{self._minor}'
         self.linux_url: str
         self.sign_url: str
@@ -107,6 +112,8 @@ class PKGBUILD:
                     pkgbuild.write(f'_major={self._major}\n')
                 elif '_minor=' in line:
                     pkgbuild.write(f'_minor={self._minor}\n')
+                elif 'pkgrel=' in line:
+                    pkgbuild.write(f'pkgrel={self._pkgrel}\n')
                 elif 'source=(' in line:
                     is_open = True
                     pkgbuild.write(line)
@@ -123,7 +130,7 @@ class PKGBUILD:
 
 if __name__ == '__main__':
 
-    re_pkgbuild = PKGBUILD(5.13, 5)
+    re_pkgbuild = PKGBUILD(5.13, 8, 1)
     re_pkgbuild.download()
     re_pkgbuild.updatePackageBuild()
 
