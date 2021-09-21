@@ -145,7 +145,7 @@ class PKGBUILD:
 
 
 def main() -> None:
-    re_pkgbuild = PKGBUILD(5.13, 8, 1)
+    re_pkgbuild = PKGBUILD(5.14, 6, 1)
     re_pkgbuild.goToPkgbuildPath()
     re_pkgbuild.download()
     re_pkgbuild.updatePackageBuild()

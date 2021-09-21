@@ -76,10 +76,10 @@ index a89eb0accd5e2e..580001e89c6cae 100644
 --- a/include/uapi/linux/futex.h
 +++ b/include/uapi/linux/futex.h
 @@ -21,6 +21,7 @@
- #define FUTEX_WAKE_BITSET	10
  #define FUTEX_WAIT_REQUEUE_PI	11
  #define FUTEX_CMP_REQUEUE_PI	12
-+#define FUTEX_WAIT_MULTIPLE	13
+ #define FUTEX_LOCK_PI2		13
++#define FUTEX_WAIT_MULTIPLE	14
 
  #define FUTEX_PRIVATE_FLAG	128
  #define FUTEX_CLOCK_REALTIME	256
@@ -544,10 +544,10 @@ index 580001e89c6cae..a3e760886b8e7e 100644
 --- a/include/uapi/linux/futex.h
 +++ b/include/uapi/linux/futex.h
 @@ -21,7 +21,7 @@
- #define FUTEX_WAKE_BITSET	10
  #define FUTEX_WAIT_REQUEUE_PI	11
  #define FUTEX_CMP_REQUEUE_PI	12
--#define FUTEX_WAIT_MULTIPLE	13
+ #define FUTEX_LOCK_PI2		13
+-#define FUTEX_WAIT_MULTIPLE	14
 +#define FUTEX_WAIT_MULTIPLE	31
 
  #define FUTEX_PRIVATE_FLAG	128
