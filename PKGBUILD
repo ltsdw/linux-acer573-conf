@@ -8,7 +8,7 @@ cp "$_where/patches/"* $_where
 # Set these variables to ANYTHING that is not null to enable them
 
 _major=5.14
-_minor=6
+_minor=9
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw-lto
 pkgver=${_major}.${_minor}
@@ -28,7 +28,6 @@ source=(
         "0001-ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit.patch"
         "0001-intel_idle-tweak-cpuidle-cstates.patch"
         "0001-initialize-ata-before-graphics.patch"
-        "0002-v5.14-winesync.patch"
         "0001-give-rdrand-some-credit.patch"
         "0001-increase-the-ext4-default-commit-age.patch"
         "0001-smpboot-reuse-timer-calibration.patch"
@@ -40,22 +39,20 @@ source=(
         "0002-v5.14-futex2_interface.patch"
         "0002-v5.14-fsync.patch"
         "0000-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
-        "0000-prjc_v5.14-r2.patch"
-        "0001-prjc_v5.14-r2_fix.patch"
+        "0000-prjc_v5.14-r3.patch"
         "config-custom-sdw"
        )
 
 sha256sums=(
             "7e068b5e0d26a62b10e5320b25dce57588cbbc6f781c090442138c9c9c3271b2"
             "e54ecea09148d2bbc37e72f9c34e23a0676594c9c7eab49ff1b9dd89d54a3bca"
-            "1149f28bdb4ffe49c99bfd2ef73e379c2e64b56579a13227c47a0cd02c8767d7"
+            "ce444a50abc335294f6104e075ac2448ee1c677c076031f517dd98c877b4e076"
             "72c2d9063d95fdc25125520b16a72d2c361878d7767aeb3e456becfdd2f05f3d"
             "e11a3d3c29496a115b5b140db79ea9c4e1aac5db15c39e5b650e4e4a66d5b903"
             "7bbb41762567e41c1153d83a73a5e524808253aa0be57227e432ff477a88c7d8"
             "f5d29a664e06699b6e2237f0cd34ec4d14e7207155666df7fd237151649243d0"
             "7107c547c55fae3fb5aef86885e6f061ade5991114553227ad7af73d766d0e00"
             "fd211a0ebda270dd8ae8938ef61e69cfec217c2fdaae434cc73e16b6c3022036"
-            "034d12a73b507133da2c69a34d61efd2f6b6618549650aa26d748142d22002e1"
             "abacadd30f8be5d7dba827410b8922eb880480b1f942352e63a066c6562c0551"
             "45e8f4b221e5cb9f6cd80079d74684d76032c2f7f462b102c988a2bcd301eb45"
             "0a7a3dfe2558f1ad9d4767893dffb6386c907e8893963efba4c93111aa783fbc"
@@ -67,8 +64,7 @@ sha256sums=(
             "efe5e21706fdf64559ead866c85a5d88c5c3f743d814410df3810ca61cc5b966"
             "aa67e81a27d9062e463594acb91eca6dd13388f23cbe53ca56298f9dba61cc10"
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
-            "0109723a253a26f0155095292970d72aac82a59ce0f0be64699fdb36255ce3b5"
-            "df5d3cf57ae43956afd43f879e7a2c0ce338a89355e6345b43e8645f07d08416"
+            "2e2247183034fa4a2ea1cd943d3d24ee9ea52daf70d47e69d5564f8ac1367aa2"
             "SKIP"
             )
 
