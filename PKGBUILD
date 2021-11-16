@@ -7,8 +7,8 @@ cp "$_where/patches/"* $_where
 ### BUILD OPTIONS
 # Set these variables to ANYTHING that is not null to enable them
 
-_major=5.14
-_minor=9
+_major=5.15
+_minor=2
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw-lto
 pkgver=${_major}.${_minor}
@@ -24,6 +24,7 @@ source=(
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
         "0001-pci-pme-wakeups.patch"
         "0001-do-accept-in-LIFO-order-for-cache-efficiency.patch"
+        "0003-MGLRU_5.15.patch"
         "0000-deault-to-CC_OPTIMIZE_FOR_PERFORMANCE_O3-for-clang.patch"
         "0001-ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit.patch"
         "0001-intel_idle-tweak-cpuidle-cstates.patch"
@@ -32,23 +33,23 @@ source=(
         "0001-increase-the-ext4-default-commit-age.patch"
         "0001-smpboot-reuse-timer-calibration.patch"
         "0001-locking-rwsem-spin-faster.patch"
-        "0003-lru_5.14.patch"
         "0001-enable-stateless-firmware-loading.patch"
-        "0000-more-uarches-for-kernel-5.8+.patch"
+        "0002-v5.15-fsync1_via_futex_waitv.patch"
         "0001-kconfig-add-500Hz-timer-interrupt-kernel-conf.patch"
-        "0002-v5.14-futex2_interface.patch"
-        "0002-v5.14-fsync.patch"
+        "0002-v5.15-futex_waitv.patch"
+        "0000-more-uarches-for-kernel-5.15+.patch"
         "0000-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
-        "0000-prjc_v5.14-r3.patch"
+        "prjc_v5.15-r0.patch"
         "config-custom-sdw"
        )
 
 sha256sums=(
-            "7e068b5e0d26a62b10e5320b25dce57588cbbc6f781c090442138c9c9c3271b2"
-            "e54ecea09148d2bbc37e72f9c34e23a0676594c9c7eab49ff1b9dd89d54a3bca"
-            "ce444a50abc335294f6104e075ac2448ee1c677c076031f517dd98c877b4e076"
+            "57b2cf6991910e3b67a1b3490022e8a0674b6965c74c12da1e99d138d1991ee8"
+            "00dc010b2eb0714f0e843083bdc2676d83561bd4f1fed0b8c7f65c34be69595a"
+            "42a0a582319be3cda01979970dbcd1c2cbe847d34b18f509bf4d27cc1a48dd34"
             "72c2d9063d95fdc25125520b16a72d2c361878d7767aeb3e456becfdd2f05f3d"
             "e11a3d3c29496a115b5b140db79ea9c4e1aac5db15c39e5b650e4e4a66d5b903"
+            "ca227216b63e561275c0c6d646525c1bf0f9b2590b6ccfde3a0c9568347ac44b"
             "7bbb41762567e41c1153d83a73a5e524808253aa0be57227e432ff477a88c7d8"
             "f5d29a664e06699b6e2237f0cd34ec4d14e7207155666df7fd237151649243d0"
             "7107c547c55fae3fb5aef86885e6f061ade5991114553227ad7af73d766d0e00"
@@ -57,14 +58,13 @@ sha256sums=(
             "45e8f4b221e5cb9f6cd80079d74684d76032c2f7f462b102c988a2bcd301eb45"
             "0a7a3dfe2558f1ad9d4767893dffb6386c907e8893963efba4c93111aa783fbc"
             "d5afd337dc6667d6e8256953542db55bb7e9af09654915d07d93d49695c7785c"
-            "12b3eeb99faf4aa1558b2c6e47b307e4cb35655a3b658b9c6cfcf6b25ad6639e"
             "4ffbdd8ea0ac3a6502722e483625e6c801cd50adf16c02b8a773639d0cd521d9"
-            "f9f1e62517f8469ec903dfeb5ff3e4ee3caa20c1fed6ebf7add79e7e42e967c5"
+            "63a2ddf7ca9d3922f4eac3ac66bc37ffb10ad8b18b3e596832d3faa66b93dfa6"
             "dbca7be48e4ce8886ac7c6c655af1a277684f68a7b5a2e22e8ef2d7bd33ed3dc"
-            "efe5e21706fdf64559ead866c85a5d88c5c3f743d814410df3810ca61cc5b966"
-            "aa67e81a27d9062e463594acb91eca6dd13388f23cbe53ca56298f9dba61cc10"
+            "c8f7c50d9b1418ba22b5ca735c47111a162be416109714d26a674162e5b2cb97"
+            "380bcf40cc8396e97bd1d7f2577ab2ace51885858d3f155b1fb2dd5469efd00d"
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
-            "2e2247183034fa4a2ea1cd943d3d24ee9ea52daf70d47e69d5564f8ac1367aa2"
+            "decd4a55c0d47b1eb808733490cdfea1207a2022d46f06d04a3cc60fdcb3f32c"
             "SKIP"
             )
 
