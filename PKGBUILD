@@ -7,8 +7,8 @@ cp "$_where/patches/"* $_where
 ### BUILD OPTIONS
 # Set these variables to ANYTHING that is not null to enable them
 
-_major=5.16
-_minor=14
+_major=5.17
+_minor=8
 _srcname=linux-${_major}
 pkgbase=linux-ltsdw-lto
 pkgver=${_major}.${_minor}
@@ -24,7 +24,8 @@ source=(
         "https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
         "0001-pci-pme-wakeups.patch"
         "0001-do-accept-in-LIFO-order-for-cache-efficiency.patch"
-        "0003-MGLRU_5.16.patch"
+        "0004-mm-Support-soft-dirty-flag-reset-for-VA-range.patch"
+        "0000-more-uarches-for-kernel-5.17+.patch"
         "0001-ipv4-tcp-allow-the-memory-tuning-for-tcp-to-go-a-lit.patch"
         "0001-intel_idle-tweak-cpuidle-cstates.patch"
         "0001-initialize-ata-before-graphics.patch"
@@ -33,43 +34,46 @@ source=(
         "0001-smpboot-reuse-timer-calibration.patch"
         "0001-locking-rwsem-spin-faster.patch"
         "0001-enable-stateless-firmware-loading.patch"
-        "0002-v5.16-fsync1_via_futex_waitv.patch"
+        "0003-MGLRU_5.17.patch"
         "0001-kconfig-add-500Hz-timer-interrupt-kernel-conf.patch"
+        "0002-v5.17-fsync1_via_futex_waitv.patch"
         "0000-default-to-CC_OPTIMIZE_FOR_PERFORMANCE_O3-for-clang.patch"
-        "0000-more-uarches-for-kernel-5.15+.patch"
+        "0004-mm-Support-soft-dirty-flag-read-with-reset.patch"
         "0000-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch"
-        "prjc_v5.16-r0.patch"
+        "prjc_v5.17-r1.patch"
         "config-custom-sdw"
        )
 
 sha256sums=(
-            "027d7e8988bb69ac12ee92406c3be1fe13f990b1ca2249e226225cd1573308bb"
-            "dddc9fa3ada89431ec11d1df74d18d3b4fb16b975f72867602092c86b63ef227"
-            "b937799c9a78417161b3f40a4fae99d6a9ed7fe653a4b84d9908cd11a6ab62ca"
-            "72c2d9063d95fdc25125520b16a72d2c361878d7767aeb3e456becfdd2f05f3d"
-            "e11a3d3c29496a115b5b140db79ea9c4e1aac5db15c39e5b650e4e4a66d5b903"
-            "d814badbb20b900aff35579882aade938ffa028badfce88a8d0d06d19eed0781"
-            "f5d29a664e06699b6e2237f0cd34ec4d14e7207155666df7fd237151649243d0"
-            "7107c547c55fae3fb5aef86885e6f061ade5991114553227ad7af73d766d0e00"
-            "fd211a0ebda270dd8ae8938ef61e69cfec217c2fdaae434cc73e16b6c3022036"
-            "abacadd30f8be5d7dba827410b8922eb880480b1f942352e63a066c6562c0551"
-            "45e8f4b221e5cb9f6cd80079d74684d76032c2f7f462b102c988a2bcd301eb45"
-            "0a7a3dfe2558f1ad9d4767893dffb6386c907e8893963efba4c93111aa783fbc"
-            "d5afd337dc6667d6e8256953542db55bb7e9af09654915d07d93d49695c7785c"
-            "4ffbdd8ea0ac3a6502722e483625e6c801cd50adf16c02b8a773639d0cd521d9"
-            "9df628fd530950e37d31da854cb314d536f33c83935adf5c47e71266a55f7004"
+            "555fef61dddb591a83d62dd04e252792f9af4ba9ef14683f64840e46fa20b1b1"
+            "81147b5a3dc08fdd41c0a36b098164f148f070024a4ff6ce6486f93a4637ac70"
+            "3dcdb3dd014240fe4eb344a20cd62bef568f33458d391946fdee5a4a8f0ef83f"
+            "52ea7832aed7f4eae6da965776fedd83837e00b7b7551e6686d6489633a6a3a8"
+            "214e27301bd9e9ab24ae4da5bebe405fa25ca5f77c764e0d1dce92571c53cd5e"
+            "1b656ad96004f27e9dc63d7f430b50d5c48510d6d4cd595a81c24b21adb70313"
+            "dea86a521603414a8c7bf9cf1f41090d5d6f8035ce31407449e25964befb1e50"
+            "260333b57dbe1180eced49ededf1a9b3d2404d597242e5c79f76aa6e7073b54c"
+            "c3be452e4bc1473a5535b0d6014c5b9cf35c45bf0c80b31c8620eb9636d5c325"
+            "bb0bbd7125540bb97a18922688a6115db38bf7157930d56d7fa5b4534bbaedbc"
+            "734d99ad8791f5cc41222ab877070fa4108450e16d5881155af8374c89d154b3"
+            "9c931aa68f62012994c188e31c17f5c4d93618a2677864d53f3b43519e3dc419"
+            "8eec5dfed7a0e3164294d429dd8023e5b02c4ae6121c53a8619e99135f574dd6"
+            "5c75ac423bdf050d19e9446c55d59074a5bf86f8e86641adf63e6b2d48ccfb40"
+            "bedbb4cfb8d8906681d9827efaafc872e8a87b44e5f78881329779755a9e0e71"
+            "7cd3617c97e67360c2f31e97fa751b83dccf47919f313ce141d2290ccecc4611"
             "dbca7be48e4ce8886ac7c6c655af1a277684f68a7b5a2e22e8ef2d7bd33ed3dc"
+            "9df628fd530950e37d31da854cb314d536f33c83935adf5c47e71266a55f7004"
             "7bbb41762567e41c1153d83a73a5e524808253aa0be57227e432ff477a88c7d8"
-            "380bcf40cc8396e97bd1d7f2577ab2ace51885858d3f155b1fb2dd5469efd00d"
+            "b0319a7dff9c48b2f3e3d3597ee154bf92223149a633a8b7ce4026252db86da6"
             "f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6"
-            "7bd99d10ec9f834de95424d033f940f9531beb3a7b4d9711448f0ed66832c03d"
+            "16031e6da6c6dbb848189b49ebe118a70dca0bb28fba20e45ff83bde9bb3c986"
             "SKIP"
             )
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
-export CFLAGS="-march=native -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math"
+export CFLAGS="-mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -mno-avx2 -O0 -O2 -fno-tree-vectorize -march=native -mpopcnt"
 
 prepare() {
     cd ${_srcname}
